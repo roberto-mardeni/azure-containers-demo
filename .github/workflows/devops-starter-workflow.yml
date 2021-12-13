@@ -13,9 +13,9 @@ env:
   DOCKERFILEPATH: "Application/aspnet-core-dotnet-core"
   REGISTRYSKU: "Standard"
   REGISTRYNAME: "azurecontainersdemowebappacr"
-  REGISTRYLOCATION: "South Central US"
+  REGISTRYLOCATION: "East US"
   IMAGENAME: "azurecontainersdemowebappc580"
-  RESOURCEGROUPNAME: azure-containers-demo-webapp-rg
+  RESOURCEGROUPNAME: azure-containers-demo-rg
   LOCATION: East US
   APPINSIGHTSLOCATION: East US
   SUBSCRIPTIONID: 15561d27-5df0-4f7b-9cb8-a4a771b9fd71
@@ -162,7 +162,7 @@ jobs:
     - name: Install Helm Chart
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade --set ApplicationConfiguration.BackgroundColor="#00FFFF" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" aspnet-core-dotnet-core-1.0.tgz
+        helm upgrade --set ApplicationConfiguration.BackgroundColor="#179C00" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" aspnet-core-dotnet-core-1.0.tgz
 
   deployAppService:
     name: Deploy to App Service
