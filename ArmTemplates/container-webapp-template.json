@@ -19,7 +19,7 @@
             "type": "String"
         },
         "imageName": {
-            "type":"String"
+            "type": "String"
         },
         "registryLocation": {
             "type": "String"
@@ -30,6 +30,9 @@
         },
         "startupCommand": {
             "defaultValue": "",
+            "type": "String"
+        },
+        "logAnalyticsWorkspaceName": {
             "type": "String"
         }
     },
@@ -122,7 +125,8 @@
             },
             "properties": {
                 "applicationId": "[parameters('webAppName')]",
-                "Request_Source": "AzureTfsExtensionAzureProject"
+                "Request_Source": "AzureTfsExtensionAzureProject",
+                "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('logAnalyticsWorkspaceName'))]"
             }
         }
     ]
