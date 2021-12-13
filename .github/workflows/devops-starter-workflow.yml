@@ -100,7 +100,7 @@ jobs:
 
   deployAppService:
     name: Deploy to App Service
-    needs: deployContainerInstance
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
