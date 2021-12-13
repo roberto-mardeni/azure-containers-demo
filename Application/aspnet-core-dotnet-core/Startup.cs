@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using aspnet_core_dotnet_core.Services;
 
 namespace aspnet_core_dotnet_core
 {
@@ -31,6 +32,9 @@ namespace aspnet_core_dotnet_core
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddSingleton<IApplicationConfiguration, ApplicationConfiguration>(
+                e => Configuration.GetSection("ApplicationConfiguration")
+                    .Get<ApplicationConfiguration>());
 
             services.AddRazorPages();
         }

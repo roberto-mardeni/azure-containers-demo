@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject aspnet_core_dotnet_core.Services.IApplicationConfiguration AppSettings;
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -17,7 +19,7 @@
     </environment>
     <link rel="stylesheet" href="~/css/site.min.css" />
 </head>
-<body>
+<body style="background-color: @AppSettings.BackgroundColor;">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
             <div class="container">
