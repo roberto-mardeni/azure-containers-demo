@@ -37,6 +37,12 @@
         "registryName": {
             "type": "string"
         },
+        "registryUsername": {
+            "type": "string"
+        },
+        "registryPassword": {
+            "type": "string"
+        },
         "backgroundColor": {
             "type": "string",
             "defaultValue": "#FF9100"
@@ -44,28 +50,17 @@
         "ipAddressType": {
             "type": "string",
             "defaultValue": "Public"
-        },
-        "registryLocation": {
-            "type": "String"
-        },
-        "registrySku": {
-            "defaultValue": "Standard",
-            "type": "String"
         }
     },
-    "resources": [
-        {
-            "type": "Microsoft.ContainerRegistry/registries",
-            "sku": {
-                "name": "[parameters('registrySku')]"
-            },
-            "name": "[parameters('registryName')]",
-            "apiVersion": "2017-10-01",
-            "location": "[parameters('registryLocation')]",
-            "properties": {
-                "adminUserEnabled": true
+    "variables": {
+        "ports": [
+            {
+                "port": 80,
+                "protocol": "TCP"
             }
-        },
+        ]
+    },
+    "resources": [
         {
             "location": "[resourceGroup().location]",
             "name": "[parameters('containerName')]",
@@ -89,12 +84,7 @@
                                     "value": "[parameters('backgroundColor')]"
                                 }
                             ],
-                            "ports": [
-                                {
-                                    "port": 5000,
-                                    "protocol": "TCP"
-                                }
-                            ]
+                            "ports": "[variables('ports')]"
                         }
                     }
                 ],
@@ -103,24 +93,16 @@
                 "imageRegistryCredentials": [
                     {
                         "server": "[concat(parameters('registryName'),'.azurecr.io')]",
-                        "username": "[listCredentials(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName')), '2017-10-01').username]",
-                        "password": "[listCredentials(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName')), '2017-10-01').passwords[0].value]"
+                        "username": "[parameters('registryUsername')]",
+                        "password": "[parameters('registryPassword')]"
                     }
                 ],
                 "ipAddress": {
                     "type": "[parameters('ipAddressType')]",
-                    "ports": [
-                        {
-                            "port": 5000,
-                            "protocol": "TCP"
-                        }
-                    ]
+                    "ports": "[variables('ports')]"
                 }
             },
-            "tags": {},
-            "dependsOn": [
-                "[concat('Microsoft.ContainerRegistry/registries/', parameters('registryName'))]"
-            ]
+            "tags": {}
         }
     ]
 }
