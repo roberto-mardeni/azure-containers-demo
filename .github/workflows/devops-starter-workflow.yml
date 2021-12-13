@@ -56,7 +56,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: helm-chart
-        path: Charts/*.tgz
+        path: Charts/aspnet-core-dotnet-core/*.tgz
 
     # Create Azure container registry
     - uses: azure/arm-deploy@v1
