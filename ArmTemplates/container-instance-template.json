@@ -102,7 +102,7 @@
                 "osType": "[parameters('osType')]",
                 "imageRegistryCredentials": [
                     {
-                        "server": "[concat('https://', reference(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName'))).loginServer)]",
+                        "server": "[concat(parameters('registryName'),'.azurecr.io')]",
                         "username": "[listCredentials(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName')), '2017-10-01').username]",
                         "password": "[listCredentials(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName')), '2017-10-01').passwords[0].value]"
                     }
