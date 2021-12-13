@@ -48,8 +48,8 @@ jobs:
 
     - name: Package Helm Chart
       run: |
-        pushd Charts
-        helm package .\aspnet-core-dotnet-core\ --version 1.0
+        pushd Charts/aspnet-core-dotnet-core
+        helm package . --version 1.0
         popd
 
     - name: Upload Helm Chart Artifact
