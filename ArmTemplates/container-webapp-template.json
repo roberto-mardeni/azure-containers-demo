@@ -118,13 +118,14 @@
         {
             "type": "Microsoft.Insights/components",
             "name": "[parameters('webAppName')]",
-            "apiVersion": "2014-04-01",
+            "apiVersion": "2020-02-02",
             "location": "[parameters('appInsightsLocation')]",
             "tags": {
                 "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('webAppName'))]": "Resource"
             },
             "properties": {
                 "applicationId": "[parameters('webAppName')]",
+                "Application_Type": "web",
                 "Request_Source": "AzureTfsExtensionAzureProject",
                 "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('logAnalyticsWorkspaceName'))]"
             }
