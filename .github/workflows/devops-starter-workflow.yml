@@ -20,6 +20,7 @@ env:
   APPINSIGHTSLOCATION: East US
   SUBSCRIPTIONID: 15561d27-5df0-4f7b-9cb8-a4a771b9fd71
   SKU: S1 Standard
+  AKSCLUSTERNAME: azure-containers-demo-aks
 
 jobs:
   build:
@@ -98,6 +99,34 @@ jobs:
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/container-instance-template.json
         parameters: containerName="${{ env.CONTAINERNAME }}" imageName="${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}" registryName="${{ env.REGISTRYNAME }}"  registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}"
+
+  deployAks:
+    name: Deploy to AKS
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Fetch ACR credentials
+      id: acrCredentials
+      continue-on-error: false
+      run: |
+          echo "::set-output name=acr_username::`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`"
+          echo "::set-output name=acr_password::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+          echo "::add-mask::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+
+    - uses: azure/arm-deploy@v1
+      id: deploy
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
+        template: ./ArmTemplates/aks-template.json
+        parameters: clusterName="${{ env.AKSCLUSTERNAME }}" dnsPrefix="${{ env.AKSCLUSTERNAME }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" registryName="${{ env.REGISTRYNAME }}"
 
   deployAppService:
     name: Deploy to App Service

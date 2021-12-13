@@ -1,0 +1,252 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "clusterName": {
+            "type": "string"
+        },
+        "dnsPrefix": {
+            "type": "string"
+        },
+        "networkPlugin": {
+            "type": "string",
+            "allowedValues": [
+                "azure",
+                "kubenet"
+            ],
+            "defaultValue": "kubenet",
+            "metadata": {
+                "description": "Network plugin used for building Kubernetes network."
+            }
+        },
+        "enableRBAC": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "enablePrivateCluster": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable private network access to the Kubernetes cluster."
+            }
+        },
+        "enableHttpApplicationRouting": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "enableAzurePolicy": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Boolean flag to turn on and off Azure Policy addon."
+            }
+        },
+        "enableOmsAgent": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Boolean flag to turn on and off omsagent addon."
+            }
+        },
+        "osDiskSizeGB": {
+            "type": "int",
+            "defaultValue": 0,
+            "metadata": {
+                "description": "Disk size (in GiB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
+            },
+            "minValue": 0,
+            "maxValue": 1023
+        },
+        "agentCount": {
+            "defaultValue": 3,
+            "type": "int"
+        },
+        "agentVMSize": {
+            "defaultValue": "Standard_DS2_v2",
+            "type": "string"
+        },
+        "kubernetesVersion": {
+            "type": "string",
+            "defaultValue": "1.20.9"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string"
+        },
+        "registryName": {
+            "type": "string"
+        },
+        "guidValue": {
+            "type": "string",
+            "metadata": {
+                "description": "The unique id used in the role assignment of the kubernetes service to the container registry service. It is recommended to use the default value."
+            },
+            "defaultValue": "[newGuid()]"
+        }
+    },
+    "variables": {
+        "omsWorkspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('logAnalyticsWorkspaceName'))]",
+        "clusterId": "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "ContainerInsights",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[split(variables('omsWorkspaceId'),'/')[4]]",
+            "subscriptionId": "[split(variables('omsWorkspaceId'),'/')[2]]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2015-11-01-preview",
+                            "type": "Microsoft.OperationsManagement/solutions",
+                            "location": "[resourceGroup().location]",
+                            "name": "[concat('ContainerInsights', '(', split(variables('omsWorkspaceId'),'/')[8], ')')]",
+                            "properties": {
+                                "workspaceResourceId": "[variables('omsWorkspaceId')]"
+                            },
+                            "plan": {
+                                "name": "[concat('ContainerInsights', '(', split(variables('omsWorkspaceId'),'/')[8], ')')]",
+                                "product": "[concat('OMSGallery/', 'ContainerInsights')]",
+                                "promotionCode": "",
+                                "publisher": "Microsoft"
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "apiVersion": "2021-07-01",
+            "dependsOn": [],
+            "type": "Microsoft.ContainerService/managedClusters",
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('clusterName')]",
+            "properties": {
+                "kubernetesVersion": "[parameters('kubernetesVersion')]",
+                "enableRBAC": "[parameters('enableRBAC')]",
+                "dnsPrefix": "[parameters('dnsPrefix')]",
+                "agentPoolProfiles": [
+                    {
+                        "name": "agentpool",
+                        "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+                        "count": "[parameters('agentCount')]",
+                        "enableAutoScaling": true,
+                        "minCount": 1,
+                        "maxCount": "[parameters('agentCount')]",
+                        "vmSize": "[parameters('agentVMSize')]",
+                        "osType": "Linux",
+                        "storageProfile": "ManagedDisks",
+                        "type": "VirtualMachineScaleSets",
+                        "mode": "System",
+                        "maxPods": 110,
+                        "availabilityZones": [
+                            "1",
+                            "2",
+                            "3"
+                        ],
+                        "enableNodePublicIP": false,
+                        "tags": {}
+                    }
+                ],
+                "networkProfile": {
+                    "loadBalancerSku": "standard",
+                    "networkPlugin": "[parameters('networkPlugin')]"
+                },
+                "apiServerAccessProfile": {
+                    "enablePrivateCluster": "[parameters('enablePrivateCluster')]"
+                },
+                "addonProfiles": {
+                    "httpApplicationRouting": {
+                        "enabled": "[parameters('enableHttpApplicationRouting')]"
+                    },
+                    "azurepolicy": {
+                        "enabled": "[parameters('enableAzurePolicy')]"
+                    },
+                    "omsAgent": {
+                        "enabled": "[parameters('enableOmsAgent')]",
+                        "config": {
+                            "logAnalyticsWorkspaceResourceID": "[variables('omsWorkspaceId')]"
+                        }
+                    }
+                }
+            },
+            "tags": {},
+            "identity": {
+                "type": "SystemAssigned"
+            }
+        },
+        {
+            "name": "ConnectAKStoACR",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[resourceGroup().name]",
+            "dependsOn": [
+                "[concat('Microsoft.ContainerService/managedClusters/', parameters('clusterName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "apiVersion": "2018-09-01-preview",
+                            "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
+                            "name": "[concat(parameters('registryName'), '/Microsoft.Authorization/', parameters('guidValue'))]",
+                            "properties": {
+                                "principalId": "[reference(parameters('clusterName'), '2021-07-01').identityProfile.kubeletidentity.objectId]",
+                                "principalType": "ServicePrincipal",
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                                "scope": "[resourceId('Microsoft.ContainerRegistry/registries/', parameters('registryName'))]"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "ClusterMonitoringMetricPulisherRoleAssignment",
+            "apiVersion": "2017-05-10",
+            "resourceGroup": "[resourceGroup().name]",
+            "subscriptionId": "[subscription().subscriptionId]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.ContainerService/managedClusters/providers/roleAssignments",
+                            "apiVersion": "2018-01-01-preview",
+                            "name": "[concat(parameters('clusterName'), '/Microsoft.Authorization/', parameters('guidValue'))]",
+                            "properties": {
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('guidValue'))]",
+                                "principalId": "[reference(parameters('clusterName')).addonProfiles.omsAgent.identity.objectId]",
+                                "scope": "[resourceId('Microsoft.ContainerService/managedClusters/', parameters('clusterName'))]"
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.ContainerService/managedClusters/', parameters('clusterName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "applicationRoutingZone": {
+            "value": "[if(parameters('enableHttpApplicationRouting'), reference(variables('clusterId')).addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName, '')]",
+            "type": "string"
+        }
+    }
+}
