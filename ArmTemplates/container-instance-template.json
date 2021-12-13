@@ -44,9 +44,28 @@
         "ipAddressType": {
             "type": "string",
             "defaultValue": "Public"
+        },
+        "registryLocation": {
+            "type": "String"
+        },
+        "registrySku": {
+            "defaultValue": "Standard",
+            "type": "String"
         }
     },
     "resources": [
+        {
+            "type": "Microsoft.ContainerRegistry/registries",
+            "sku": {
+                "name": "[parameters('registrySku')]"
+            },
+            "name": "[parameters('registryName')]",
+            "apiVersion": "2017-10-01",
+            "location": "[parameters('registryLocation')]",
+            "properties": {
+                "adminUserEnabled": true
+            }
+        },
         {
             "location": "[resourceGroup().location]",
             "name": "[parameters('containerName')]",
@@ -98,7 +117,10 @@
                     ]
                 }
             },
-            "tags": {}
+            "tags": {},
+            "dependsOn": [
+                "[concat('Microsoft.ContainerRegistry/registries/', parameters('registryName'))]"
+            ]
         }
     ]
 }
