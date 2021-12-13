@@ -126,7 +126,7 @@ jobs:
   FunctionalTests:
     name: Functional tests
     runs-on: windows-latest
-    needs: deploy
+    needs: deployAppService
     steps:
     - uses: actions/checkout@master
 
