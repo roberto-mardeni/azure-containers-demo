@@ -21,7 +21,7 @@ env:
 
 jobs:
   build:
-    name: Build and push application to ACR
+    name: Build and push to ACR
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -70,7 +70,7 @@ jobs:
         docker push ${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}
 
   deploy:
-    name: Deploy to App Service for containers
+    name: Deploy to App Service
     needs: build
     runs-on: ubuntu-latest
     steps:
