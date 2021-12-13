@@ -65,6 +65,10 @@
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                             "value": "[reference(resourceId('microsoft.insights/components/', parameters('webAppName')), '2015-05-01').InstrumentationKey]"
+                        },
+                        {
+                            "name": "ApplicationConfiguration__BackgroundColor",
+                            "value": "#FF00FF"
                         }
                     ],
                     "appCommandLine": "[parameters('startupCommand')]",
