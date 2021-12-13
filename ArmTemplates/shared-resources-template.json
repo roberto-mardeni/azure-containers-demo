@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "registryName": {
+            "type": "String"
+        },
+        "registryLocation": {
+            "type": "String"
+        },
+        "registrySku": {
+            "defaultValue": "Standard",
+            "type": "String"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "String"
+        },
+        "logAnalyticsWorkspaceSku": {
+            "type": "String",
+            "defaultValue": "pergb2018"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.ContainerRegistry/registries",
+            "sku": {
+                "name": "[parameters('registrySku')]"
+            },
+            "name": "[parameters('registryName')]",
+            "apiVersion": "2017-10-01",
+            "location": "[parameters('registryLocation')]",
+            "properties": {
+                "adminUserEnabled": true
+            }
+        },
+        {
+            "apiVersion": "2021-06-01",
+            "name": "[parameters('logAnalyticsWorkspaceName')]",
+            "location": "[resourceGroup().location]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('logAnalyticsWorkspaceSku')]"
+                }
+            }
+        }
+    ]
+}

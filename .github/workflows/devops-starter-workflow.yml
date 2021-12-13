@@ -5,6 +5,7 @@ on:
       - master
 
 env:
+  LOGANALYTICSWORKSPACENAME: azure-containers-demo-la
   CONTAINERNAME: azure-containers-demo-instance
   APPNAME: azure-containers-demo-webapp
   APPLICATIONPATH: Application
@@ -42,12 +43,12 @@ jobs:
 
     # Create Azure container registry
     - uses: azure/arm-deploy@v1
-      id: createAcr
+      id: createAzureSharedResources
       with:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
-        template: ./ArmTemplates/containerRegistry-template.json
-        parameters: registryName="${{ env.REGISTRYNAME }}" registryLocation="${{ env.REGISTRYLOCATION }}" registrySku="${{ env.REGISTRYSKU }}"
+        template: ./ArmTemplates/shared-resources-template.json
+        parameters: registryName="${{ env.REGISTRYNAME }}" registryLocation="${{ env.REGISTRYLOCATION }}" registrySku="${{ env.REGISTRYSKU }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}"
 
     - name: Fetch ACR credentials
       id: acrCredentials
