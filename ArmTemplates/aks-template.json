@@ -181,66 +181,6 @@
             "identity": {
                 "type": "SystemAssigned"
             }
-        },
-        {
-            "name": "ConnectAKStoACR",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2017-05-10",
-            "resourceGroup": "[resourceGroup().name]",
-            "dependsOn": [
-                "[concat('Microsoft.ContainerService/managedClusters/', parameters('clusterName'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "apiVersion": "2018-09-01-preview",
-                            "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
-                            "name": "[concat(parameters('registryName'), '/Microsoft.Authorization/', parameters('guidValue'))]",
-                            "properties": {
-                                "principalId": "[reference(parameters('clusterName'), '2021-07-01').identityProfile.kubeletidentity.objectId]",
-                                "principalType": "ServicePrincipal",
-                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                                "scope": "[resourceId('Microsoft.ContainerRegistry/registries/', parameters('registryName'))]"
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "ClusterMonitoringMetricPulisherRoleAssignment",
-            "apiVersion": "2017-05-10",
-            "resourceGroup": "[resourceGroup().name]",
-            "subscriptionId": "[subscription().subscriptionId]",
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.ContainerService/managedClusters/providers/roleAssignments",
-                            "apiVersion": "2018-01-01-preview",
-                            "name": "[concat(parameters('clusterName'), '/Microsoft.Authorization/', parameters('guidValue'))]",
-                            "properties": {
-                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('guidValue'))]",
-                                "principalId": "[reference(parameters('clusterName')).addonProfiles.omsAgent.identity.objectId]",
-                                "scope": "[resourceId('Microsoft.ContainerService/managedClusters/', parameters('clusterName'))]"
-                            }
-                        }
-                    ]
-                }
-            },
-            "dependsOn": [
-                "[concat('Microsoft.ContainerService/managedClusters/', parameters('clusterName'))]"
-            ]
         }
     ],
     "outputs": {
