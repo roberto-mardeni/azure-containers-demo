@@ -1,0 +1,104 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "containerName": {
+            "type": "string",
+            "defaultValue": "azure-containers-demo-instance"
+        },
+        "imageName": {
+            "type": "string"
+        },
+        "osType": {
+            "type": "string",
+            "allowedValues": [
+                "Linux",
+                "Windows"
+            ],
+            "defaultValue": "Linux"
+        },
+        "numberCpuCores": {
+            "type": "string",
+            "defaultValue": "1"
+        },
+        "memory": {
+            "type": "string",
+            "defaultValue": "1.5"
+        },
+        "restartPolicy": {
+            "type": "string",
+            "allowedValues": [
+                "OnFailure",
+                "Always",
+                "Never"
+            ],
+            "defaultValue": "OnFailure"
+        },
+        "registryName": {
+            "type": "string"
+        },
+        "backgroundColor": {
+            "type": "string",
+            "defaultValue": "#FF9100"
+        },
+        "ipAddressType": {
+            "type": "string",
+            "defaultValue": "Public"
+        }
+    },
+    "resources": [
+        {
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('containerName')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2018-10-01",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "[parameters('containerName')]",
+                        "properties": {
+                            "image": "[parameters('imageName')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": "[int(parameters('numberCpuCores'))]",
+                                    "memoryInGB": "[float(parameters('memory'))]"
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "ApplicationConfiguration__BackgroundColor",
+                                    "value": "[parameters('backgroundColor')]"
+                                }
+                            ],
+                            "ports": [
+                                {
+                                    "port": 5000,
+                                    "protocol": "TCP"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "restartPolicy": "[parameters('restartPolicy')]",
+                "osType": "[parameters('osType')]",
+                "imageRegistryCredentials": [
+                    {
+                        "server": "[concat('https://', reference(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName'))).loginServer)]",
+                        "username": "[listCredentials(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName')), '2017-10-01').username]",
+                        "password": "[listCredentials(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName')), '2017-10-01').passwords[0].value]"
+                    }
+                ],
+                "ipAddress": {
+                    "type": "[parameters('ipAddressType')]",
+                    "ports": [
+                        {
+                            "port": 5000,
+                            "protocol": "TCP"
+                        }
+                    ]
+                }
+            },
+            "tags": {}
+        }
+    ]
+}

@@ -5,6 +5,7 @@ on:
       - master
 
 env:
+  CONTAINERNAME: azure-containers-demo-instance
   APPNAME: azure-containers-demo-webapp
   APPLICATIONPATH: Application
   HOSTINGPLAN: azure-containers-demo-webapp
@@ -69,7 +70,27 @@ jobs:
         docker build "$GITHUB_WORKSPACE/${{env.DOCKERFILEPATH}}" -f  "${{env.DOCKERFILEPATH}}/Dockerfile" -t ${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}
         docker push ${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}
 
-  deploy:
+  deployContainerInstance:
+    name: Deploy to Container Instance
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - uses: azure/arm-deploy@v1
+      id: deploy
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
+        template: ./ArmTemplates/container-instance-template.json
+        parameters: containerName="${{ env.CONTAINERNAME }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}"
+
+  deployAppService:
     name: Deploy to App Service
     needs: build
     runs-on: ubuntu-latest
