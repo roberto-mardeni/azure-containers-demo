@@ -50,6 +50,10 @@
         "ipAddressType": {
             "type": "string",
             "defaultValue": "Public"
+        },
+        "dnsNameLabel": {
+            "type": "string",
+            "defaultValue": "azure-containers-demo-instance"
         }
     },
     "variables": {
@@ -99,7 +103,8 @@
                 ],
                 "ipAddress": {
                     "type": "[parameters('ipAddressType')]",
-                    "ports": "[variables('ports')]"
+                    "ports": "[variables('ports')]",
+                    "dnsNameLabel": "[parameters('dnsNameLabel')]"
                 }
             },
             "tags": {}
