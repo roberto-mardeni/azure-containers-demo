@@ -166,7 +166,7 @@ jobs:
     - name: Install Helm Chart
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade --set ApplicationConfiguration.BackgroundColor="#179C00" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" aspnet-core-dotnet-core-1.0.tgz
+        helm upgrade v1-aspnet-core-dotnet-core aspnet-core-dotnet-core-1.0.tgz --set ApplicationConfiguration.BackgroundColor="#179C00" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" -i --wait
 
   deployAppService:
     name: Deploy to App Service
