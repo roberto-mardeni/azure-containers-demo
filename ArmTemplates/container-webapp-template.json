@@ -74,6 +74,7 @@
                             "value": "#FF00FF"
                         }
                     ],
+                    "alwaysOn": true,
                     "appCommandLine": "[parameters('startupCommand')]",
                     "linuxFxVersion": "[concat('DOCKER|', reference(concat('Microsoft.ContainerRegistry/registries/', parameters('registryName'))).loginServer, '/', parameters('imageName'))]"
                 },
