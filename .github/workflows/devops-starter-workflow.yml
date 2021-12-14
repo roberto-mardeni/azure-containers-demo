@@ -167,6 +167,7 @@ jobs:
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
         helm upgrade v1-aspnet-core-dotnet-core aspnet-core-dotnet-core-1.0.tgz --set ApplicationConfiguration.BackgroundColor="#179C00" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" -i --wait
+        echo "http://v1-aspnet-core-dotnet-core.${{ steps.deploy.outputs.applicationRoutingZone }}"
 
   deployAppService:
     name: Deploy to App Service
