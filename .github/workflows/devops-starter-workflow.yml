@@ -5,20 +5,20 @@ on:
       - master
 
 env:
-  LOGANALYTICSWORKSPACENAME: azure-containers-demo-la2
-  CONTAINERNAME: azure-containers-demo-instance2
-  APPNAME: azure-containers-demo-webapp2
+  LOGANALYTICSWORKSPACENAME: azure-containers-demo-la
+  CONTAINERNAME: azure-containers-demo-instance
+  APPNAME: azure-containers-demo-webapp
   APPLICATIONPATH: Application
-  HOSTINGPLAN: azure-containers-demo-webapp2
+  HOSTINGPLAN: azure-containers-demo-webapp
   DOCKERFILEPATH: "Application/aspnet-core-dotnet-core"
   REGISTRYSKU: "Standard"
-  REGISTRYNAME: "azurecontainersdemowebappacr2"
-  IMAGENAME: "azurecontainersdemowebappc5802"
-  RESOURCEGROUPNAME: azure-containers-demo-rg2
+  REGISTRYNAME: "azurecontainersdemowebappacr"
+  IMAGENAME: "azurecontainersdemowebappc580"
+  RESOURCEGROUPNAME: azure-containers-demo-rg
   LOCATION: eastus
   SUBSCRIPTIONID: 15561d27-5df0-4f7b-9cb8-a4a771b9fd71
   SKU: S1 Standard
-  AKSCLUSTERNAME: azure-containers-demo-aks2
+  AKSCLUSTERNAME: azure-containers-demo-aks
 
 jobs:
   build:
