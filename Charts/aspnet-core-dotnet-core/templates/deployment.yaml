@@ -35,7 +35,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: ApplicationConfiguration__BackgroundColor
-            value: {{ .Values.applicationConfiguration.backgroundColor }}
+            value: "{{ .Values.applicationConfiguration.backgroundColor }}"
           ports:
             - name: http
               containerPort: 80
