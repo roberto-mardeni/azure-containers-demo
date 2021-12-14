@@ -27,7 +27,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  - host: {{ include "aspnet-core-dotnet-core.fullname" . }}.{{ .Values.ingress.fqdn }}
+  - host: {{ .Values.ingress.host }}.{{ .Values.ingress.fqdn }}
     http:
       paths:
       - path: /
