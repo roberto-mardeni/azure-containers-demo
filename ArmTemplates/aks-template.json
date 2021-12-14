@@ -136,6 +136,7 @@
                     {
                         "name": "agentpool",
                         "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+                        "count": 1,
                         "enableAutoScaling": true,
                         "minCount": 1,
                         "maxCount": "[parameters('agentCount')]",
