@@ -126,7 +126,8 @@ jobs:
 
     - name: Retrieve URL
       run: |
-        echo "Azure Container Instance URL: ${{ steps.deploy.outputs.url }}"
+        echo "Azure Container Instance URL:"
+        az container show --resource-group ${{ env.RESOURCEGROUPNAME }} --name ${{ env.CONTAINERNAME }} --query "ipAddress.fqdn" --out TSV
 
   deployAks:
     name: Deploy to AKS
@@ -174,7 +175,7 @@ jobs:
     - name: Install Helm Chart
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.AKSHOSTLABEL }}" -i --wait --timeout 10m0s
+        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.AKSHOSTLABEL }}" -i --wait --timeout 15m0s
         echo "http://${{ env.AKSHOSTLABEL }}.${{ steps.deploy.outputs.applicationRoutingZone }}"
 
   deployAppService:
