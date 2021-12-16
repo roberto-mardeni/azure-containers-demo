@@ -13,3 +13,5 @@ Currently supported in this repository:
 ## Workflow
 
 The current workflow file will build and push a container to a [Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/) and then deploy to the currently supported services.
+
+To demonstrate the flexibility in configuration, ah HTML HEX value is passed as a parameter to each of the services deployment to be set as the HTML body background color.
