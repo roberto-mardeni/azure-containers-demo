@@ -108,11 +108,5 @@
             },
             "tags": {}
         }
-    ],
-    "outputs": {
-        "url": {
-            "type": "string",
-            "value": "[concat('http://', parameters('dnsNameLabel'))]"
-        }
-    }
+    ]
 }
