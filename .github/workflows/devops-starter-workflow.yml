@@ -176,7 +176,7 @@ jobs:
     - name: Install Helm Chart
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.AKSHOSTLABEL }}" -i --wait --timeout 15m0s
+        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.AKSHOSTLABEL }}" -i --wait --timeout 15m0s
         echo "http://${{ env.AKSHOSTLABEL }}.${{ steps.deploy.outputs.applicationRoutingZone }}"
 
   deployAppService:
