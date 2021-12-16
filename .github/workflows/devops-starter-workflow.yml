@@ -19,6 +19,10 @@ env:
   SUBSCRIPTIONID: 15561d27-5df0-4f7b-9cb8-a4a771b9fd71
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
+  AKSHOSTLABEL: v1aspnet
+  ACIBGCOLOR: #FF9100
+  APSBGCOLOR: #FF00FF
+  AKSBGCOLOR: #179C00
 
 jobs:
   build:
@@ -118,7 +122,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/container-instance-template.json
-        parameters: containerName="${{ env.CONTAINERNAME }}" imageName="${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}" registryName="${{ env.REGISTRYNAME }}"  registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}"
+        parameters: containerName="${{ env.CONTAINERNAME }}" imageName="${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}" registryName="${{ env.REGISTRYNAME }}"  registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}" backgroundColor="${{ env.ACIBGCOLOR }}"
 
   deployAks:
     name: Deploy to AKS
@@ -166,8 +170,8 @@ jobs:
     - name: Install Helm Chart
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="#179C00" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.tag="${{ github.sha }}" --set ingress.host="v1aspnetcore" -i --wait
-        echo "http://v1aspnetcore.${{ steps.deploy.outputs.applicationRoutingZone }}"
+        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.AKSHOSTLABEL }}" -i --wait
+        echo "http://${{ env.AKSHOSTLABEL }}.${{ steps.deploy.outputs.applicationRoutingZone }}"
 
   deployAppService:
     name: Deploy to App Service
@@ -187,7 +191,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/container-webapp-template.json
-        parameters: webAppName="${{ env.APPNAME }}" hostingPlanName="${{ env.HOSTINGPLAN }}" sku="${{ env.SKU }}" appInsightsLocation="${{ env.LOCATION }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}"
+        parameters: webAppName="${{ env.APPNAME }}" hostingPlanName="${{ env.HOSTINGPLAN }}" sku="${{ env.SKU }}" appInsightsLocation="${{ env.LOCATION }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" backgroundColor="${{ env.APSBGCOLOR }}"
  
     - name: Get ACR credentials
       id: getACRCred

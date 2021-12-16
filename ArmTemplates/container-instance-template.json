@@ -44,8 +44,7 @@
             "type": "string"
         },
         "backgroundColor": {
-            "type": "string",
-            "defaultValue": "#FF9100"
+            "type": "string"
         },
         "ipAddressType": {
             "type": "string",
