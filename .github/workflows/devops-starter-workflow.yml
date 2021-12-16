@@ -20,9 +20,9 @@ env:
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
   AKSHOSTLABEL: v1aspnet
-  ACIBGCOLOR: #FF9100
-  APSBGCOLOR: #FF00FF
-  AKSBGCOLOR: #179C00
+  ACIBGCOLOR: "#FF9100"
+  APSBGCOLOR: "#FF00FF"
+  AKSBGCOLOR: "#179C00"
 
 jobs:
   build:
