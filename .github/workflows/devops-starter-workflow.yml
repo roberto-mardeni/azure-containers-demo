@@ -19,10 +19,13 @@ env:
   SUBSCRIPTIONID: 15561d27-5df0-4f7b-9cb8-a4a771b9fd71
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
-  AKSHOSTLABEL: v1aspnet
+  DNSLABEL: v1aspnet
+  ACANAME: azure-containers-demo-aca
+  ACAENAME: azure-containers-demo-acae
   ACIBGCOLOR: "#FF9100"
   APSBGCOLOR: "#FF00FF"
   AKSBGCOLOR: "#179C00"
+  ACABGCOLOR: "#009C17"
 
 jobs:
   build:
@@ -176,8 +179,8 @@ jobs:
     - name: Install Helm Chart
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.AKSHOSTLABEL }}" -i --wait --timeout 15m0s
-        echo "http://${{ env.AKSHOSTLABEL }}.${{ steps.deploy.outputs.applicationRoutingZone }}"
+        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.DNSLABEL }}" -i --wait --timeout 15m0s
+        echo "http://${{ env.DNSLABEL }}.${{ steps.deploy.outputs.applicationRoutingZone }}"
 
   deployAppService:
     name: Deploy to App Service
@@ -211,3 +214,38 @@ jobs:
       with: 
         app-name: ${{ env.APPNAME }} 
         images: ${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}
+  
+  deployAzureContainerApp:
+    name: Deploy to Container Apps
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Fetch ACR credentials
+      id: acrCredentials
+      continue-on-error: false
+      run: |
+          echo "::set-output name=acr_username::`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`"
+          echo "::set-output name=acr_password::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+          echo "::add-mask::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+
+    - uses: azure/arm-deploy@v1
+      id: deploy
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
+        template: ./ArmTemplates/aca-template.json
+        parameters: name="${{ env.ACANAME }}" containerName="${{ env.DNSLABEL }}" registryName="${{ env.REGISTRYNAME }}" registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}" repositoryName="${{ env.IMAGENAME }}" imageTag="${{ github.sha }}" environmentName="$${{ env.ACAENAME }}" workspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" backgroundColor="${{ env.ACABGCOLOR }}"
+
+    - name: Retrieve URL
+      run: |
+        echo "Azure Container Instance URL:"
+        url=`az containerapp show --resource-group ${{ env.RESOURCEGROUPNAME }} --name ${{ env.ACANAME }} --query "ipAddress.fqdn" --out TSV`
+        echo "http://$url"
+

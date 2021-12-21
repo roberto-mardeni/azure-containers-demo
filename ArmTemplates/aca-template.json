@@ -1,0 +1,118 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "Canada Central"
+        },
+        "name": {
+            "type": "string",
+            "defaultValue": "azure-containers-demo-aca"
+        },
+        "containerName": {
+            "type": "string"
+        },
+        "registryName": {
+            "type": "string"
+        },
+        "registryUsername": {
+            "type": "string"
+        },
+        "registryPassword": {
+            "type": "string"
+        },
+        "repositoryName": {
+            "type": "string"
+        },
+        "imageTag": {
+            "type": "string"
+        },
+        "ingress": {
+            "type": "object",
+            "defaultValue": {
+                "external": true,
+                "targetPort": "80",
+                "transport": "auto"
+            }
+        },
+        "environmentName": {
+            "type": "string",
+            "defaultValue": "azure-containers-demo-acae"
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "backgroundColor": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/containerapps",
+            "kind": "containerapps",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Web/kubeenvironments/', parameters('environmentName'))]"
+            ],
+            "properties": {
+                "kubeEnvironmentId": "[resourceId('Microsoft.Web/kubeEnvironments', parameters('environmentName'))]",
+                "configuration": {
+                    "secrets": [
+                        {
+                            "name": "azurecontainersdemowebappacrazurecrio-azurecontainersdemowebappacr-pwd",
+                            "value": "[parameters('registryPassword')]"
+                        }
+                    ],
+                    "registries": [
+                        {
+                            "server": "[parameters('registryName')]",
+                            "username": "[parameters('registryUsername')]",
+                            "passwordSecretRef": "azurecontainersdemowebappacrazurecrio-azurecontainersdemowebappacr-pwd"
+                        }
+                    ],
+                    "ingress": "[parameters('ingress')]"
+                },
+                "template": {
+                    "containers": [
+                        {
+                            "name": "[parameters('containerName')]",
+                            "image": "[concat(parameters('registryName'),'/',parameters('repositoryName'),':', parameters('imageTag'))]",
+                            "command": [],
+                            "env": [
+                                {
+                                    "name": "ApplicationConfiguration__BackgroundColor",
+                                    "value": "[parameters('backgroundColor')]"
+                                }
+                            ],
+                            "resources": {
+                                "cpu": "1",
+                                "memory": "2Gi"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('environmentName')]",
+            "type": "Microsoft.Web/kubeEnvironments",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "properties": {
+                "type": "managed",
+                "internalLoadBalancerEnabled": false,
+                "appLogsConfiguration": {
+                    "destination": "log-analytics",
+                    "logAnalyticsConfiguration": {
+                        "customerId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2020-08-01').customerId]",
+                        "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2020-08-01').primarySharedKey]"
+                    }
+                }
+            }
+        }
+    ]
+}
