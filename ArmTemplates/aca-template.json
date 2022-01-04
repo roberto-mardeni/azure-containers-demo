@@ -92,7 +92,11 @@
                                 "memory": "2Gi"
                             }
                         }
-                    ]
+                    ],
+                    "scale": {
+                        "minReplicas": 1,
+                        "maxReplicas": 3
+                    }
                 }
             }
         },
