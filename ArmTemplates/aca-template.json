@@ -13,7 +13,7 @@
         "containerName": {
             "type": "string"
         },
-        "registryName": {
+        "registryUrl": {
             "type": "string"
         },
         "registryUsername": {
@@ -68,7 +68,7 @@
                     ],
                     "registries": [
                         {
-                            "server": "[parameters('registryName')]",
+                            "server": "[parameters('registryUrl')]",
                             "username": "[parameters('registryUsername')]",
                             "passwordSecretRef": "azurecontainersdemowebappacrazurecrio-azurecontainersdemowebappacr-pwd"
                         }
@@ -79,7 +79,7 @@
                     "containers": [
                         {
                             "name": "[parameters('containerName')]",
-                            "image": "[concat(parameters('registryName'),'.azurecr.io/',parameters('repositoryName'),':', parameters('imageTag'))]",
+                            "image": "[concat(parameters('registryUrl'),'/',parameters('repositoryName'),':', parameters('imageTag'))]",
                             "command": [],
                             "env": [
                                 {
