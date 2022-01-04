@@ -28,14 +28,6 @@
         "imageTag": {
             "type": "string"
         },
-        "ingress": {
-            "type": "object",
-            "defaultValue": {
-                "external": true,
-                "targetPort": "80",
-                "transport": "auto"
-            }
-        },
         "environmentName": {
             "type": "string",
             "defaultValue": "azure-containers-demo-acae"
@@ -62,7 +54,7 @@
                 "configuration": {
                     "secrets": [
                         {
-                            "name": "azurecontainersdemowebappacrazurecrio-azurecontainersdemowebappacr-pwd",
+                            "name": "registry-pwd",
                             "value": "[parameters('registryPassword')]"
                         }
                     ],
@@ -70,10 +62,14 @@
                         {
                             "server": "[parameters('registryUrl')]",
                             "username": "[parameters('registryUsername')]",
-                            "passwordSecretRef": "azurecontainersdemowebappacrazurecrio-azurecontainersdemowebappacr-pwd"
+                            "passwordSecretRef": "registry-pwd"
                         }
                     ],
-                    "ingress": "[parameters('ingress')]"
+                    "ingress": {
+                        "external": true,
+                        "targetPort": "80",
+                        "transport": "auto"
+                    }
                 },
                 "template": {
                     "containers": [
