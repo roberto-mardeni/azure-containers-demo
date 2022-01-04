@@ -15,7 +15,7 @@ env:
   REGISTRYNAME: "azurecontainersdemoacr13579"
   IMAGENAME: "azurecontainersdemowebappc580"
   RESOURCEGROUPNAME: azure-containers-demo-rg
-  LOCATION: eastus
+  LOCATION: canadacentral
   SUBSCRIPTIONID: 15561d27-5df0-4f7b-9cb8-a4a771b9fd71
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
