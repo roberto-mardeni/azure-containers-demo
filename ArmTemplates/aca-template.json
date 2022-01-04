@@ -88,14 +88,14 @@
                                 }
                             ],
                             "resources": {
-                                "cpu": "1",
-                                "memory": "2Gi"
+                                "cpu": ".5",
+                                "memory": "1Gi"
                             }
                         }
                     ],
                     "scale": {
                         "minReplicas": 1,
-                        "maxReplicas": 3
+                        "maxReplicas": 2
                     }
                 }
             }
