@@ -254,8 +254,8 @@ jobs:
           --image ${{ env.DNSLABEL }} \
           --environment "${{ env.ACAENAME }}2" \
           --registry-login-server "${{ env.REGISTRYNAME }}.azurecr.io" \
-          --registry-username ${{ steps.acrCredentials.outputs.acr_username }} \
-          --registry-password ${{ steps.acrCredentials.outputs.acr_password }} \
+          --registry-username "${{ steps.acrCredentials.outputs.acr_username }}" \
+          --registry-password "${{ steps.acrCredentials.outputs.acr_password }}" \
           --ingress external \
           --transport auto \
           --target-port 80 \
