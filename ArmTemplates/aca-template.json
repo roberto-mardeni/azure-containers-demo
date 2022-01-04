@@ -79,7 +79,7 @@
                     "containers": [
                         {
                             "name": "[parameters('containerName')]",
-                            "image": "[concat(parameters('registryName'),'/',parameters('repositoryName'),':', parameters('imageTag'))]",
+                            "image": "[concat(parameters('registryName'),'.azurecr.io/',parameters('repositoryName'),':', parameters('imageTag'))]",
                             "command": [],
                             "env": [
                                 {
