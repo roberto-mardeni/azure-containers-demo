@@ -20,7 +20,7 @@ env:
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
   DNSLABEL: v1aspnet
-  ACANAME: azure-containers-demo-aca
+  ACANAME: v1aspnet-aca 
   ACAENAME: azure-containers-demo-acae
   ACIBGCOLOR: "#FF9100"
   APSBGCOLOR: "#FF00FF"
