@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
@@ -59,14 +59,14 @@
             }
         },
         {
+            "type": "Microsoft.Web/containerApps",
             "apiVersion": "2021-03-01",
             "name": "[parameters('name')]",
-            "type": "Microsoft.Web/containerApps",
-            "kind": "containerapps",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Web/kubeenvironments/', parameters('environmentName'))]"
             ],
+            "kind": "containerapps",
             "properties": {
                 "kubeEnvironmentId": "[resourceId('Microsoft.Web/kubeEnvironments', parameters('environmentName'))]",
                 "configuration": {
