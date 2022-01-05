@@ -106,11 +106,7 @@
                                 "memory": "1Gi"
                             }
                         }
-                    ],
-                    "scale": {
-                        "minReplicas": 1,
-                        "maxReplicas": 2
-                    }
+                    ]
                 }
             }
         }
