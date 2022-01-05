@@ -239,7 +239,7 @@ jobs:
       id: deployViaCli
       run: |
         az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl -y
-        az provider register --namespace Microsoft.Web -w
+        az provider register --namespace Microsoft.Web
         LOG_ANALYTICS_WORKSPACE_CLIENT_ID=`az monitor log-analytics workspace show --query customerId -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.LOGANALYTICSWORKSPACENAME }} -o tsv | tr -d '[:space:]'`
         LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=`az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.LOGANALYTICSWORKSPACENAME }} -o tsv | tr -d '[:space:]'`
         az containerapp env create \
