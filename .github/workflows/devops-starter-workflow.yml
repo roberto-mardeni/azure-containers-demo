@@ -241,33 +241,6 @@ jobs:
         az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl -y
         az provider register --namespace Microsoft.Web
 
-    # - name: Deploy Azure Container App
-    #   id: deployViaCli
-    #   run: |
-    #     LOG_ANALYTICS_WORKSPACE_CLIENT_ID=`az monitor log-analytics workspace show --query customerId -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.LOGANALYTICSWORKSPACENAME }} -o tsv | tr -d '[:space:]'`
-    #     LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=`az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.LOGANALYTICSWORKSPACENAME }} -o tsv | tr -d '[:space:]'`
-    #     az containerapp env create \
-    #       --name "${{ env.ACAENAME }}3" \
-    #       --resource-group ${{ env.RESOURCEGROUPNAME }} \
-    #       --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID \
-    #       --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET \
-    #       --location "${{ env.LOCATION }}"
-    #     az containerapp create \
-    #       --name "${{ env.ACANAME }}3" \
-    #       --resource-group ${{ env.RESOURCEGROUPNAME }} \
-    #       --image ${{ env.DNSLABEL }} \
-    #       --environment "${{ env.ACAENAME }}3" \
-    #       --registry-login-server "${{ env.REGISTRYNAME }}.azurecr.io" \
-    #       --registry-username "${{ steps.acrCredentials.outputs.acr_username }}" \
-    #       --registry-password "${{ steps.acrCredentials.outputs.acr_password }}" \
-    #       --ingress external \
-    #       --transport auto \
-    #       --target-port 80 \
-    #       -v ApplicationConfiguration__BackgroundColor="${{ env.ACABGCOLOR }}"
-    #       echo "Azure Container Instance URL:"
-    #       url=`az containerapp show --resource-group ${{ env.RESOURCEGROUPNAME }} --name "${{ env.ACANAME }}3" --query "ipAddress.fqdn" --out TSV`
-    #       echo "http://$url"
-
     - uses: azure/arm-deploy@v1
       id: deploy
       with:
