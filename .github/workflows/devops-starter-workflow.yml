@@ -270,7 +270,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/aca-template.json
-        parameters: name="${{ env.ACANAME }}" containerName=v1aspnet registryUrl="${{ env.REGISTRYNAME }}.azurecr.io" registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}" repositoryName="${{ env.IMAGENAME }}" imageTag="${{ github.sha }}" environmentName="${{ env.ACAENAME }}" workspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" backgroundColor="${{ env.ACABGCOLOR }}"
+        parameters: name=${{ env.DNSLABEL }} registryUrl="${{ env.REGISTRYNAME }}.azurecr.io" registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}" repositoryName="${{ env.IMAGENAME }}" imageTag="${{ github.sha }}" environmentName="${{ env.ACAENAME }}" workspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" backgroundColor="${{ env.ACABGCOLOR }}"
 
     - name: Retrieve URL
       run: |

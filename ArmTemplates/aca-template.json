@@ -10,9 +10,6 @@
             "type": "string",
             "defaultValue": "azure-containers-demo-aca"
         },
-        "containerName": {
-            "type": "string"
-        },
         "registryUrl": {
             "type": "string"
         },
@@ -92,7 +89,7 @@
                 "template": {
                     "containers": [
                         {
-                            "name": "[parameters('containerName')]",
+                            "name": "[parameters('name')]",
                             "image": "[concat(parameters('registryUrl'),'/',parameters('repositoryName'),':', parameters('imageTag'))]",
                             "command": [],
                             "env": [
