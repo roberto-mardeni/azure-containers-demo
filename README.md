@@ -9,7 +9,7 @@ Currently supported in this repository:
 - [Azure Container Instances](https://docs.microsoft.com/en-us/azure/container-instances/)
 - [Azure App Service for Containers](https://docs.microsoft.com/en-us/azure/app-service/quickstart-custom-container?tabs=dotnet&pivots=container-linux)
 - [Azure Kubernetes Service](https://docs.microsoft.com/en-us/azure/aks/)
-- [Azure Container Apps (PREVIEW)](https://docs.microsoft.com/en-us/azure/container-apps/)
+- [Azure Container Apps](https://docs.microsoft.com/en-us/azure/container-apps/)
 
 ## Workflow
 
