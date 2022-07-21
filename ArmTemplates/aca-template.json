@@ -38,13 +38,10 @@
     },
     "resources": [
         {
-            "apiVersion": "2021-03-01",
             "name": "[parameters('environmentName')]",
-            "type": "Microsoft.Web/kubeEnvironments",
             "location": "[parameters('location')]",
             "dependsOn": [],
             "properties": {
-                "type": "managed",
                 "internalLoadBalancerEnabled": false,
                 "appLogsConfiguration": {
                     "destination": "log-analytics",
@@ -53,19 +50,18 @@
                         "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2020-08-01').primarySharedKey]"
                     }
                 }
-            }
+            },
+            "apiVersion": "2022-03-01",
+            "type": "Microsoft.App/managedEnvironments"
         },
         {
-            "type": "Microsoft.Web/containerApps",
-            "apiVersion": "2021-03-01",
             "name": "[parameters('name')]",
+            "kind": "containerapps",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Web/kubeenvironments/', parameters('environmentName'))]"
+                "[concat('Microsoft.App/managedEnvironments/', parameters('environmentName'))]"
             ],
-            "kind": "containerapps",
             "properties": {
-                "kubeEnvironmentId": "[resourceId('Microsoft.Web/kubeEnvironments', parameters('environmentName'))]",
                 "configuration": {
                     "secrets": [
                         {
@@ -80,6 +76,7 @@
                             "passwordSecretRef": "registry-pwd"
                         }
                     ],
+                    "activeRevisionsMode": "Single",
                     "ingress": {
                         "external": true,
                         "targetPort": "80",
@@ -103,9 +100,15 @@
                                 "memory": "1Gi"
                             }
                         }
-                    ]
-                }
-            }
+                    ],
+                    "scale": {
+                        "minReplicas": 0
+                    }
+                },
+                "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments/', parameters('environmentName'))]"
+            },
+            "apiVersion": "2022-01-01-preview",
+            "type": "Microsoft.App/containerapps"
         }
     ]
 }
