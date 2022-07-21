@@ -293,7 +293,9 @@ jobs:
       id: createASA
       continue-on-error: false
       run: |
-        az config set extension.use_dynamic_install=yes_without_prompt
+        az extension remove --name spring
+        az extension add --name spring
+        az extension remove --name spring-cloud
 
         az spring create \
           --resource-group ${{ env.RESOURCEGROUPNAME }} \
