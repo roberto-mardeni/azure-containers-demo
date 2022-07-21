@@ -28,10 +28,12 @@ env:
   DNSLABEL: v1aspnet
   ACANAME: v1aspnet-aca 
   ACAENAME: azure-containers-demo-acae
+  ASANAME: azure-containers-demo-asa
   ACIBGCOLOR: "#FF9100"
   APSBGCOLOR: "#FF00FF"
   AKSBGCOLOR: "#179C00"
   ACABGCOLOR: "#009C17"
+  ASABGCOLOR: "#9C0017"
 
 jobs:
   build:
@@ -261,3 +263,93 @@ jobs:
         url=`az containerapp show --resource-group ${{ env.RESOURCEGROUPNAME }} --name ${{ env.ACANAME }} --query "configuration.ingress.fqdn" --out TSV`
         echo "http://$url"
 
+  deployAzureSpringApps:
+    name: Deploy to Spring Apps
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Fetch ACR credentials
+      id: acrCredentials
+      continue-on-error: false
+      run: |
+        echo "::set-output name=acr_username::`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`"
+        echo "::set-output name=acr_password::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+        echo "::add-mask::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+    
+    - name: Create Spring App Service
+      id: createASA
+      continue-on-error: false
+      run: |
+        az spring create \
+          --resource-group ${{ env.RESOURCEGROUPNAME }} \
+          --name ${{ env.ASANAME }} \
+          --sku enterprise \
+          --enable-application-configuration-service \
+          --enable-service-registry \
+          --enable-gateway \
+          --enable-api-portal
+        
+        asaid=`az spring show -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.ASANAME }} --query id --output tsv`
+        lawid=`az monitor log-analytics workspace show -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.LOGANALYTICSWORKSPACENAME }} --query id --output tsv`        
+
+        az monitor diagnostic-settings create \
+          --name "send-logs-and-metrics-to-log-analytics" \
+          --resource $asaid \
+          --workspace $lawid \
+          --logs '[
+              {
+                "category": "ApplicationConsole",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              },
+              {
+                  "category": "SystemLogs",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "enabled": false,
+                    "days": 0
+                  }
+                },
+              {
+                  "category": "IngressLogs",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "enabled": false,
+                    "days": 0
+                  }
+                }
+            ]' \
+            --metrics '[
+              {
+                "category": "AllMetrics",
+                "enabled": true,
+                "retentionPolicy": {
+                  "enabled": false,
+                  "days": 0
+                }
+              }
+            ]'
+            
+        az spring app create \
+          --resource-group ${{ env.RESOURCEGROUPNAME }} \
+          --name ${{ env.DNSLABEL }} \
+          --service ${{ env.ASANAME }}
+        
+        az spring app deploy \
+          --resource-group ${{ env.RESOURCEGROUPNAME }} \
+          --name ${{ env.DNSLABEL }} \
+          --container-image "${{ env.IMAGENAME }}:${{ github.sha }}" \
+          --service ${{ env.ASANAME }}
+          --container-registry "${{ env.REGISTRYNAME }}.azurecr.io" \
+          --registry-password "${{ steps.acrCredentials.outputs.acr_username }}" |
+          --registry-username "${{ steps.acrCredentials.outputs.acr_password }}"
