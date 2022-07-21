@@ -3,7 +3,12 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      comments:
+        description: Comments
+        type: string
+        required: false
 
 env:
   LOGANALYTICSWORKSPACENAME: azure-containers-demo-la
