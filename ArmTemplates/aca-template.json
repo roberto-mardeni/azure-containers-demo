@@ -2,10 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "location": {
-            "type": "string",
-            "defaultValue": "Canada Central"
-        },
         "name": {
             "type": "string",
             "defaultValue": "azure-containers-demo-aca"
@@ -39,7 +35,7 @@
     "resources": [
         {
             "name": "[parameters('environmentName')]",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "dependsOn": [],
             "properties": {
                 "internalLoadBalancerEnabled": false,
@@ -57,7 +53,7 @@
         {
             "name": "[parameters('name')]",
             "kind": "containerapps",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[concat('Microsoft.App/managedEnvironments/', parameters('environmentName'))]"
             ],
