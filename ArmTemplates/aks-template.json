@@ -67,7 +67,7 @@
         },
         "kubernetesVersion": {
             "type": "string",
-            "defaultValue": "1.20.9"
+            "defaultValue": "1.22.11"
         },
         "logAnalyticsWorkspaceName": {
             "type": "string"
