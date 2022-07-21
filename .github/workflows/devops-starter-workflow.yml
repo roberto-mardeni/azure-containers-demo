@@ -293,9 +293,7 @@ jobs:
       id: createASA
       continue-on-error: false
       run: |
-        az extension remove --name spring
         az extension add --name spring
-        az extension remove --name spring-cloud
 
         az spring create \
           --resource-group ${{ env.RESOURCEGROUPNAME }} \
