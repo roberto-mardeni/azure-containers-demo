@@ -12,6 +12,7 @@ on:
 
 env:
   LOGANALYTICSWORKSPACENAME: azure-containers-demo-la
+  APPINSIGHTSNAME: azure-containers-demo-ai
   CONTAINERNAME: azure-containers-demo-instance
   APPNAME: azure-containers-demo-webapp
   APPLICATIONPATH: Application
@@ -84,7 +85,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/shared-resources-template.json
-        parameters: registryName="${{ env.REGISTRYNAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}"
+        parameters: registryName="${{ env.REGISTRYNAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}"
 
     - name: Fetch ACR credentials
       id: acrCredentials
@@ -214,7 +215,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/container-webapp-template.json
-        parameters: webAppName="${{ env.APPNAME }}" hostingPlanName="${{ env.HOSTINGPLAN }}" sku="${{ env.SKU }}" appInsightsLocation="${{ env.LOCATION }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" backgroundColor="${{ env.APSBGCOLOR }}"
+        parameters: webAppName="${{ env.APPNAME }}" hostingPlanName="${{ env.HOSTINGPLAN }}" sku="${{ env.SKU }}" appInsightsLocation="${{ env.LOCATION }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.APSBGCOLOR }}"
  
     - name: Get ACR credentials
       id: getACRCred
@@ -288,71 +289,21 @@ jobs:
         echo "::set-output name=acr_username::`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`"
         echo "::set-output name=acr_password::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
         echo "::add-mask::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
-    
-    - name: Create Spring App Service
-      id: createASA
+
+    - uses: azure/arm-deploy@v1
+      id: deploy
+      with:
+        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
+        template: ./ArmTemplates/asa-template.json
+        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}"
+
+    - name: Create Spring App
+      id: createAppAndDeploy
       continue-on-error: false
       run: |
         az extension add --name spring
 
-        az spring create \
-          --resource-group ${{ env.RESOURCEGROUPNAME }} \
-          --name ${{ env.ASANAME }} \
-          --sku enterprise \
-          --enable-application-configuration-service \
-          --enable-service-registry \
-          --enable-gateway \
-          --enable-api-portal
-        
-        asaid=`az spring show -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.ASANAME }} --query id --output tsv`
-        lawid=`az monitor log-analytics workspace show -g ${{ env.RESOURCEGROUPNAME }} -n ${{ env.LOGANALYTICSWORKSPACENAME }} --query id --output tsv`        
-
-        az monitor diagnostic-settings create \
-          --name "send-logs-and-metrics-to-log-analytics" \
-          --resource $asaid \
-          --workspace $lawid \
-          --logs '[
-              {
-                "category": "ApplicationConsole",
-                "enabled": true,
-                "retentionPolicy": {
-                  "enabled": false,
-                  "days": 0
-                }
-              },
-              {
-                  "category": "SystemLogs",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": false,
-                    "days": 0
-                  }
-                },
-              {
-                  "category": "IngressLogs",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": false,
-                    "days": 0
-                  }
-                }
-            ]' \
-            --metrics '[
-              {
-                "category": "AllMetrics",
-                "enabled": true,
-                "retentionPolicy": {
-                  "enabled": false,
-                  "days": 0
-                }
-              }
-            ]'
-            
-        az spring app create \
-          --resource-group ${{ env.RESOURCEGROUPNAME }} \
-          --name ${{ env.DNSLABEL }} \
-          --service ${{ env.ASANAME }}
-        
         az spring app deploy \
           --resource-group ${{ env.RESOURCEGROUPNAME }} \
           --name ${{ env.DNSLABEL }} \

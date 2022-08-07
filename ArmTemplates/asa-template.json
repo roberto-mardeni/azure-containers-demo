@@ -1,0 +1,98 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceName": {
+            "type": "string"
+        },
+        "appName": {
+            "type": "string"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string"
+        },
+        "appInsightsName": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('serviceName')]",
+            "location": "[resourceGroup().location]",
+            "type": "Microsoft.AppPlatform/Spring",
+            "apiVersion": "2022-05-01-preview",
+            "sku": {
+                "name": "B0",
+                "tier": "Basic"
+            },
+            "properties": {
+                "zoneRedundant": false
+            },
+            "dependsOn": [],
+            "resources": [
+                {
+                    "type": "apps",
+                    "apiVersion": "2020-07-01",
+                    "name": "[parameters('appName')]",
+                    "properties": {
+                        "public": true
+                    },
+                    "dependsOn": [
+                        "[parameters('serviceName')]"
+                    ],
+                    "resources": [
+                        {
+                            "type": "deployments",
+                            "apiVersion": "2020-07-01",
+                            "name": "default",
+                            "dependsOn": [
+                                "[parameters('appName')]"
+                            ],
+                            "properties": {
+                                "source": {
+                                    "relativePath": "<default>",
+                                    "type": "Jar"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "apiVersion": "2020-11-01-preview",
+            "name": "[concat(parameters('serviceName'), '/default')]",
+            "type": "Microsoft.AppPlatform/Spring/monitoringSettings",
+            "properties": {
+                "traceEnabled": true,
+                "appInsightsInstrumentationKey": "[reference(resourceId('microsoft.insights/components/', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]",
+                "appInsightsSamplingRate": 100
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.AppPlatform/Spring', parameters('serviceName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.AppPlatform/Spring/providers/diagnosticSettings",
+            "name": "[concat(parameters('serviceName'), '/Microsoft.Insights/monitoring')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.AppPlatform/Spring', parameters('serviceName'))]"
+            ],
+            "apiVersion": "2017-05-01-preview",
+            "properties": {
+                "name": "monitoring",
+                "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+                "logs": [
+                    {
+                        "category": "ApplicationConsole",
+                        "enabled": true,
+                        "retentionPolicy": {
+                            "days": 7,
+                            "enabled": false
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
