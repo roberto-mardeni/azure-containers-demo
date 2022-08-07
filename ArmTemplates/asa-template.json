@@ -8,6 +8,9 @@
         "appName": {
             "type": "string"
         },
+        "backgroundColor": {
+            "type": "string"
+        },
         "logAnalyticsWorkspaceName": {
             "type": "string"
         },
@@ -49,6 +52,11 @@
                                 "[parameters('appName')]"
                             ],
                             "properties": {
+                                "deploymentSettings": {
+                                    "environmentVariables": {
+                                        "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]"
+                                    },
+                                },
                                 "source": {
                                     "relativePath": "<default>",
                                     "type": "Jar"

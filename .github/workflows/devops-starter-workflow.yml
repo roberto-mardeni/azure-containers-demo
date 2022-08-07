@@ -296,7 +296,7 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/asa-template.json
-        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}"
+        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}"
 
     - name: Create Spring App
       id: createAppAndDeploy
