@@ -216,19 +216,6 @@
             "dependsOn": [
                 "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
             ]
-        },
-        {
-            "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
-            "apiVersion": "2018-09-01-preview",
-            "name": "[concat(parameters('registryName'), '/Microsoft.Authorization/', guid(parameters('registryName')))]",
-            "properties": {
-                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
-                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters/', parameters('clusterName')), '2020-06-01', 'Full').identity.principalId]",
-                "scope": "[concat('/subscriptions/', subscription().subscriptionId)]"
-            },
-            "dependsOn": [
-                "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
-            ]
         }
     ],
     "outputs": {
