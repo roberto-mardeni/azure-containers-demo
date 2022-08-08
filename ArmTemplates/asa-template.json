@@ -62,8 +62,7 @@
                                     }
                                 },
                                 "source": {
-                                    "relativePath": "<default>",
-                                    "type": "Jar"
+                                    "type": "Container"
                                 }
                             }
                         }
