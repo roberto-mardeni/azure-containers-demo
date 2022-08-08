@@ -315,3 +315,5 @@ jobs:
           --container-registry "${{ env.REGISTRYNAME }}.azurecr.io" \
           --registry-password "${{ steps.acrCredentials.outputs.acr_password }}" \
           --registry-username "${{ steps.acrCredentials.outputs.acr_username }}"
+        
+        az spring app show -g ${{ env.RESOURCEGROUPNAME }} --service ${{ env.ASANAME }} -n ${{ env.DNSLABEL }} --query "properties.url" -o TSV
