@@ -176,14 +176,6 @@ jobs:
         template: ./ArmTemplates/aks-template.json
         parameters: clusterName="${{ env.AKSCLUSTERNAME }}" dnsPrefix="${{ env.AKSCLUSTERNAME }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" registryName="${{ env.REGISTRYNAME }}" kubernetesVersion="${{ steps.aksVersion.outputs.version }}"
 
-    - name: Attach AKS to ACR
-      id: connectAksToAcr
-      continue-on-error: false
-      run: |
-        if [ $(az aks check-acr --acr ${{ env.REGISTRYNAME }} -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}) -ne 0 ]; then
-          az aks update -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }} --attach-acr ${{ env.REGISTRYNAME }}
-        fi
-
     - name: Download Helm Chart
       uses: actions/download-artifact@v2
       with:

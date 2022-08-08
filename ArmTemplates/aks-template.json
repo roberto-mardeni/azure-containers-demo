@@ -203,7 +203,7 @@
                         {
                             "type": "Microsoft.ContainerService/managedClusters/providers/roleAssignments",
                             "apiVersion": "2018-01-01-preview",
-                            "name": "azure-containers-demo-aks/Microsoft.Authorization/80ba5997-e588-4d9d-b0da-d3ca3ed6b8a4",
+                            "name": "[concat(parameters('clusterName'),'/Microsoft.Authorization/80ba5997-e588-4d9d-b0da-d3ca3ed6b8a4')]",
                             "properties": {
                                 "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '3913510d-42f4-4e42-8a64-420c390055eb')]",
                                 "principalId": "[reference(parameters('clusterName')).addonProfiles.omsAgent.identity.objectId]",
@@ -214,7 +214,19 @@
                 }
             },
             "dependsOn": [
-                "/subscriptions/15561d27-5df0-4f7b-9cb8-a4a771b9fd71/resourceGroups/azure-containers-demo-rg/providers/Microsoft.ContainerService/managedClusters/azure-containers-demo-aks"
+                "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
+            "apiVersion": "2018-09-01-preview",
+            "name": "[concat(parameters('clusterName'), '/Microsoft.Authorization/', guid(parameters('clusterName')))]",
+            "properties": {
+                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters/', parameters('clusterName')), '2020-06-01', 'Full').identity.principalId]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
             ]
         }
     ],
