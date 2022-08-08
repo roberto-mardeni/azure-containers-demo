@@ -138,7 +138,6 @@ jobs:
 
     - name: Retrieve URL
       run: |
-        echo "Azure Container Instance URL:"
         url=`az container show --resource-group ${{ env.RESOURCEGROUPNAME }} --name ${{ env.CONTAINERNAME }} --query "ipAddress.fqdn" --out TSV`
         echo "http://$url"
 
@@ -195,8 +194,11 @@ jobs:
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
         helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.DNSLABEL }}" -i --wait --timeout 15m0s
-        echo "http://${{ env.DNSLABEL }}.${{ steps.deploy.outputs.applicationRoutingZone }}"
 
+    - name: Retrieve URL
+      run: |
+        echo "http://${{ env.DNSLABEL }}.${{ steps.deploy.outputs.applicationRoutingZone }}"
+        
   deployAppService:
     name: Deploy to App Service
     needs: build
@@ -319,15 +321,15 @@ jobs:
           --service ${{ env.ASANAME }} \
           --assign-endpoint true
 
-        echo 'Azure Spring App URL'
-
+    - name: Retrieve URL
+      run: |
         az spring app show -g ${{ env.RESOURCEGROUPNAME }} \
           --service ${{ env.ASANAME }} \
           -n ${{ env.DNSLABEL }} \
           --query "properties.url" -o TSV
 
   cleanup:
-    name: Clean up and remove resources
+    name: Clean Up
     needs: [deployContainerInstance, deployAks, deployAppService, deployAzureContainerApp, deployAzureSpringApps]
     runs-on: ubuntu-latest
     environment: 'cleanup'
@@ -337,10 +339,14 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Delete Resource Group
-      id: deleteRG
+    - name: Delete Log Analytics Workspace
       continue-on-error: true
       run: |
-        az group delete -g ${{ env.RESOURCEGROUPNAME }} \
-          --force-deletion-types Microsoft.OperationalInsights/workspaces \
-          --yes
+        az monitor log-analytics workspace delete -g ${{ env.RESOURCEGROUPNAME }} \
+          --workspace-name ${{ env.LOGANALYTICSWORKSPACENAME }} \
+          --force true --yes
+
+    - name: Delete Resource Group
+      continue-on-error: true
+      run: |
+        az group delete -g ${{ env.RESOURCEGROUPNAME }} --yes
