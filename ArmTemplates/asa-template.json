@@ -16,21 +16,6 @@
         },
         "appInsightsName": {
             "type": "string"
-        },
-        "acrName": {
-            "type": "string"
-        },
-        "acrUsername": {
-            "type": "string"
-        },
-        "acrPassword": {
-            "type": "string"
-        },
-        "imageName": {
-            "type": "string"
-        },
-        "imageTag": {
-            "type": "string"
         }
     },
     "resources": [
