@@ -16,6 +16,21 @@
         },
         "appInsightsName": {
             "type": "string"
+        },
+        "acrName": {
+            "type": "string"
+        },
+        "acrUsername": {
+            "type": "string"
+        },
+        "acrPassword": {
+            "type": "string"
+        },
+        "imageName": {
+            "type": "string"
+        },
+        "imageTag": {
+            "type": "string"
         }
     },
     "resources": [
@@ -62,7 +77,15 @@
                                     }
                                 },
                                 "source": {
-                                    "type": "Container"
+                                    "type": "Container",
+                                    "customContainer": {
+                                        "containerImage": "[concat(parameters('imageName'),':',parameters('imageTag'))]",
+                                        "imageRegistryCredential": {
+                                            "password": "[parameters('acrPassword')]",
+                                            "username": "[parameters('acrUsername')]"
+                                        },
+                                        "server": "[concat(parameters('acrName'),'.azurecr.io')]"
+                                    }
                                 }
                             }
                         }
