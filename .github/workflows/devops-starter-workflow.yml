@@ -247,7 +247,7 @@ jobs:
     - name: Install Azure Container App CLI Extension
       id: installAcaCliExtension
       run: |
-        az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl -y
+        az extension add --name containerapp --upgrade -y
         az provider register --namespace Microsoft.Web
 
     - uses: azure/arm-deploy@v1
@@ -261,7 +261,7 @@ jobs:
     - name: Retrieve URL
       run: |
         echo "Azure Container Instance URL:"
-        url=`az containerapp show --resource-group ${{ env.RESOURCEGROUPNAME }} --name ${{ env.ACANAME }} --query "configuration.ingress.fqdn" --out TSV`
+        url=`az containerapp show --resource-group ${{ env.RESOURCEGROUPNAME }} --name ${{ env.ACANAME }} --query "properties.configuration.ingress.fqdn" --out TSV`
         echo "http://$url"
 
   deployAzureSpringApps:
