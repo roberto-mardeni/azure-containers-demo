@@ -55,7 +55,7 @@
                                 "deploymentSettings": {
                                     "environmentVariables": {
                                         "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]"
-                                    },
+                                    }
                                 },
                                 "source": {
                                     "relativePath": "<default>",
