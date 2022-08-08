@@ -325,3 +325,22 @@ jobs:
           --service ${{ env.ASANAME }} \
           -n ${{ env.DNSLABEL }} \
           --query "properties.url" -o TSV
+
+  cleanup:
+    name: Clean up and remove resources
+    needs: [deployContainerInstance, deployAks, deployAppService, deployAzureContainerApp, deployAzureSpringApps]
+    runs-on: ubuntu-latest
+    environment: 'cleanup'
+    steps:
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Delete Resource Group
+      id: deleteRG
+      continue-on-error: true
+      run: |
+        az group delete -g ${{ env.RESOURCEGROUPNAME }} \
+          --force-deletion-types Microsoft.OperationalInsights/workspaces \
+          --yes
