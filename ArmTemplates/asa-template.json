@@ -77,15 +77,8 @@
                                     }
                                 },
                                 "source": {
-                                    "type": "Container",
-                                    "customContainer": {
-                                        "containerImage": "[concat(parameters('imageName'),':',parameters('imageTag'))]",
-                                        "imageRegistryCredential": {
-                                            "password": "[parameters('acrPassword')]",
-                                            "username": "[parameters('acrUsername')]"
-                                        },
-                                        "server": "[concat(parameters('acrName'),'.azurecr.io')]"
-                                    }
+                                    "relativePath": "<default>",
+                                    "type": "Jar"
                                 }
                             }
                         }

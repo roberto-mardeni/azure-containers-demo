@@ -297,11 +297,21 @@ jobs:
         subscriptionId: ${{ env.SUBSCRIPTIONID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/asa-template.json
-        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}" acrName="${{ env.REGISTRYNAME }}" acrUsername="${{ steps.acrCredentials.outputs.acr_username }}" acrPassword="${{ steps.acrCredentials.outputs.acr_password }}" imageName="${{ env.IMAGENAME }}" imageTag="${{ github.sha }}"
+        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}"
 
     - name: Deploy Spring App
       id: deployApp
       continue-on-error: false
       run: |
         az extension add --name spring
+        
+        az spring app deploy \
+          --resource-group ${{ env.RESOURCEGROUPNAME }} \
+          --name ${{ env.DNSLABEL }} \
+          --container-image "${{ env.IMAGENAME }}:${{ github.sha }}" \
+          --service ${{ env.ASANAME }} \
+          --container-registry "${{ env.REGISTRYNAME }}.azurecr.io" \
+          --registry-password "${{ steps.acrCredentials.outputs.acr_password }}" \
+          --registry-username "${{ steps.acrCredentials.outputs.acr_username }}"
+        
         az spring app show -g ${{ env.RESOURCEGROUPNAME }} --service ${{ env.ASANAME }} -n ${{ env.DNSLABEL }} --query "properties.url" -o TSV
