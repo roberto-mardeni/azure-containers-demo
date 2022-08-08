@@ -313,5 +313,5 @@ jobs:
           --container-image "${{ env.IMAGENAME }}:${{ github.sha }}" \
           --service ${{ env.ASANAME }} \
           --container-registry "${{ env.REGISTRYNAME }}.azurecr.io" \
-          --registry-password "${{ steps.acrCredentials.outputs.acr_username }}" \
-          --registry-username "${{ steps.acrCredentials.outputs.acr_password }}"
+          --registry-password "${{ steps.acrCredentials.outputs.acr_password }}" \
+          --registry-username "${{ steps.acrCredentials.outputs.acr_username }}"
