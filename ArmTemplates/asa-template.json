@@ -54,7 +54,8 @@
                             "properties": {
                                 "deploymentSettings": {
                                     "environmentVariables": {
-                                        "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]"
+                                        "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]",
+                                        "ASPNETCORE_URLS": "http://+:1025/"
                                     }
                                 },
                                 "source": {
