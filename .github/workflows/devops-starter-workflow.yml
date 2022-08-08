@@ -314,6 +314,14 @@ jobs:
           --registry-password "${{ steps.acrCredentials.outputs.acr_password }}" \
           --registry-username "${{ steps.acrCredentials.outputs.acr_username }}"
         
+        az spring app update -n ${{ env.DNSLABEL }} \
+          -g ${{ env.RESOURCEGROUPNAME }} \
+          --service ${{ env.ASANAME }} \
+          --assign-endpoint true
+
         echo 'Azure Spring App URL'
 
-        az spring app show -g ${{ env.RESOURCEGROUPNAME }} --service ${{ env.ASANAME }} -n ${{ env.DNSLABEL }} --query "properties.url" -o TSV
+        az spring app show -g ${{ env.RESOURCEGROUPNAME }} \
+          --service ${{ env.ASANAME }} \
+          -n ${{ env.DNSLABEL }} \
+          --query "properties.url" -o TSV
