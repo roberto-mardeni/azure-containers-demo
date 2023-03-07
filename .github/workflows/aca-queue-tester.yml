@@ -1,0 +1,21 @@
+name: ACA Queue Reader Tester
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Put message in queue
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    steps:
+    - name: Put message
+      shell: bash
+      run: |
+        az storage message put \
+          --content "Hello Queue Reader App ${{ matrix.container }}" \
+          --queue-name "myqueue" \
+          --connection-string ${{ secrets.QUEUE_CONNECTION_STRING }}
