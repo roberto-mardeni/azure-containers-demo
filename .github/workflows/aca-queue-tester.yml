@@ -18,4 +18,4 @@ jobs:
         az storage message put \
           --content "Hello Queue Reader App ${{ matrix.container }}" \
           --queue-name "myqueue" \
-          --connection-string ${{ secrets.QUEUE_CONNECTION_STRING }}
+          --connection-string "${{ secrets.QUEUE_CONNECTION_STRING }}"
