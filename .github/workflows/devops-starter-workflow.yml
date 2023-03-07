@@ -1,8 +1,11 @@
 name: Build and deploy Docker app to Azure
+
 on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '.github/workflows/aca-*.yml'
   workflow_dispatch:
     inputs:
       comments:
