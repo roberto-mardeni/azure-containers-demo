@@ -12,10 +12,38 @@ jobs:
       matrix:
         container: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     steps:
-    - name: Put message
+    - name: Put message 1
       shell: bash
       run: |
         az storage message put \
-          --content "Hello Queue Reader App ${{ matrix.container }}" \
+          --content "Hello Queue Reader App ${{ matrix.container }}-1" \
+          --queue-name "myqueue" \
+          --connection-string "${{ secrets.QUEUE_CONNECTION_STRING }}"
+    - name: Put message 2
+      shell: bash
+      run: |
+        az storage message put \
+          --content "Hello Queue Reader App ${{ matrix.container }}-2" \
+          --queue-name "myqueue" \
+          --connection-string "${{ secrets.QUEUE_CONNECTION_STRING }}"
+    - name: Put message 3
+      shell: bash
+      run: |
+        az storage message put \
+          --content "Hello Queue Reader App ${{ matrix.container }}-3" \
+          --queue-name "myqueue" \
+          --connection-string "${{ secrets.QUEUE_CONNECTION_STRING }}"
+    - name: Put message 4
+      shell: bash
+      run: |
+        az storage message put \
+          --content "Hello Queue Reader App ${{ matrix.container }}-4" \
+          --queue-name "myqueue" \
+          --connection-string "${{ secrets.QUEUE_CONNECTION_STRING }}"
+    - name: Put message 5
+      shell: bash
+      run: |
+        az storage message put \
+          --content "Hello Queue Reader App ${{ matrix.container }}-5" \
           --queue-name "myqueue" \
           --connection-string "${{ secrets.QUEUE_CONNECTION_STRING }}"
