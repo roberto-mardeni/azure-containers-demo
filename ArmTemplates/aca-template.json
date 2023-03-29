@@ -6,13 +6,7 @@
             "type": "string",
             "defaultValue": "azure-containers-demo-aca"
         },
-        "registryUrl": {
-            "type": "string"
-        },
-        "registryUsername": {
-            "type": "string"
-        },
-        "registryPassword": {
+        "registryName": {
             "type": "string"
         },
         "repositoryName": {
@@ -62,13 +56,13 @@
                     "secrets": [
                         {
                             "name": "registry-pwd",
-                            "value": "[parameters('registryPassword')]"
+                            "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-10-01').passwords[0].value]"
                         }
                     ],
                     "registries": [
                         {
-                            "server": "[parameters('registryUrl')]",
-                            "username": "[parameters('registryUsername')]",
+                            "server": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-10-01').loginServer]",
+                            "username": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-10-01').username]",
                             "passwordSecretRef": "registry-pwd"
                         }
                     ],
@@ -83,7 +77,7 @@
                     "containers": [
                         {
                             "name": "[parameters('name')]",
-                            "image": "[concat(parameters('registryUrl'),'/',parameters('repositoryName'),':', parameters('imageTag'))]",
+                            "image": "[concat(reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-10-01').loginServer,'/',parameters('repositoryName'),':', parameters('imageTag'))]",
                             "command": [],
                             "env": [
                                 {
