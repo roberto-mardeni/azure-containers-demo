@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - '.github/workflows/aca-*.yml'
   workflow_dispatch:
     inputs:
       comments:
