@@ -95,16 +95,15 @@ jobs:
       id: acrCredentials
       continue-on-error: false
       run: |
-          echo "::set-output name=acr_username::`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`"
-          echo "::set-output name=acr_password::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
-          echo "::add-mask::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+          echo "ACR_USERNAME=`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`" >> $GITHUB_OUTPUT
+          echo "ACR_PASSWORD=`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`" >> $GITHUB_OUTPUT
 
     - name: ACR authentication
       uses: azure/docker-login@v1
       with:
         login-server: ${{ env.REGISTRYNAME }}.azurecr.io
-        username: ${{ steps.acrCredentials.outputs.acr_username }}
-        password: ${{ steps.acrCredentials.outputs.acr_password }}
+        username: ${{ steps.acrCredentials.outputs.ACR_USERNAME }}
+        password: ${{ steps.acrCredentials.outputs.ACR_PASSWORD }}
 
     - name: Docker Build & Push to ACR
       run: |
@@ -153,7 +152,7 @@ jobs:
       id: aksVersion
       continue-on-error: false
       run: |
-          echo "::set-output name=version::`az aks get-versions -l ${{ env.LOCATION }} --query "orchestrators[?default].orchestratorVersion" --output tsv`"
+          echo "version=`az aks get-versions -l ${{ env.LOCATION }} --query "orchestrators[?default].orchestratorVersion" --output tsv`" >> $GITHUB_OUTPUT
 
     - uses: azure/arm-deploy@v1
       id: deploy
@@ -261,9 +260,8 @@ jobs:
       id: acrCredentials
       continue-on-error: false
       run: |
-        echo "::set-output name=acr_username::`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`"
-        echo "::set-output name=acr_password::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
-        echo "::add-mask::`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`"
+        echo "ACR_USERNAME=`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`" >> $GITHUB_OUTPUT
+        echo "ACR_PASSWORD=`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`" >> $GITHUB_OUTPUT
 
     - name: Deploy Service
       uses: azure/arm-deploy@v1
@@ -286,8 +284,8 @@ jobs:
           --container-image "${{ env.IMAGENAME }}:${{ github.sha }}" \
           --service ${{ env.ASANAME }} \
           --container-registry "${{ env.REGISTRYNAME }}.azurecr.io" \
-          --registry-password "${{ steps.acrCredentials.outputs.acr_password }}" \
-          --registry-username "${{ steps.acrCredentials.outputs.acr_username }}"
+          --registry-password "${{ steps.acrCredentials.outputs.ACR_PASSWORD }}" \
+          --registry-username "${{ steps.acrCredentials.outputs.ACR_USERNAME }}"
         
         az spring app update -n ${{ env.DNSLABEL }} \
           -g ${{ env.RESOURCEGROUPNAME }} \
