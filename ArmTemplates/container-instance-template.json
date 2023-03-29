@@ -37,12 +37,6 @@
         "registryName": {
             "type": "string"
         },
-        "registryUsername": {
-            "type": "string"
-        },
-        "registryPassword": {
-            "type": "string"
-        },
         "backgroundColor": {
             "type": "string"
         },
@@ -95,9 +89,9 @@
                 "osType": "[parameters('osType')]",
                 "imageRegistryCredentials": [
                     {
-                        "server": "[concat(parameters('registryName'),'.azurecr.io')]",
-                        "username": "[parameters('registryUsername')]",
-                        "password": "[parameters('registryPassword')]"
+                        "server": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-10-01').loginServer]",
+                        "username": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-10-01').username]",
+                        "password": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-10-01').passwords[0].value]"
                     }
                 ],
                 "ipAddress": {
