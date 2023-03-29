@@ -43,17 +43,6 @@ jobs:
     steps:
     - uses: actions/checkout@master
 
-    - name: Azure authentication
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Create Azure Resource Group
-      run: |
-        if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME }}) = false ]; then
-          az group create -n ${{ env.RESOURCEGROUPNAME }} -l ${{ env.LOCATION }}
-        fi
-
     - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '3.1.0'
@@ -81,6 +70,17 @@ jobs:
       with:
         name: helm-chart
         path: Charts/aspnet-core-dotnet-core/*.tgz
+
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create Azure Resource Group
+      run: |
+        if [ $(az group exists --name ${{ env.RESOURCEGROUPNAME }}) = false ]; then
+          az group create -n ${{ env.RESOURCEGROUPNAME }} -l ${{ env.LOCATION }}
+        fi
 
     # Create Azure container registry
     - uses: azure/arm-deploy@v1
