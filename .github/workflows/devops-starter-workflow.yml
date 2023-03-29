@@ -24,7 +24,6 @@ env:
   IMAGENAME: "azurecontainersdemowebappc580"
   RESOURCEGROUPNAME: azure-containers-demo-rg
   LOCATION: eastus
-  SUBSCRIPTIONID: 15561d27-5df0-4f7b-9cb8-a4a771b9fd71
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
   DNSLABEL: v1aspnet
@@ -83,7 +82,7 @@ jobs:
     - uses: azure/arm-deploy@v1
       id: createAzureSharedResources
       with:
-        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/shared-resources-template.json
         parameters: registryName="${{ env.REGISTRYNAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}"
@@ -132,7 +131,7 @@ jobs:
     - uses: azure/arm-deploy@v1
       id: deploy
       with:
-        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/container-instance-template.json
         parameters: containerName="${{ env.CONTAINERNAME }}" imageName="${{ env.REGISTRYNAME }}.azurecr.io/${{ env.IMAGENAME }}:${{ github.sha }}" registryName="${{ env.REGISTRYNAME }}"  registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}" backgroundColor="${{ env.ACIBGCOLOR }}"
@@ -171,7 +170,7 @@ jobs:
     - uses: azure/arm-deploy@v1
       id: deploy
       with:
-        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/aks-template.json
         parameters: clusterName="${{ env.AKSCLUSTERNAME }}" dnsPrefix="${{ env.AKSCLUSTERNAME }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" registryName="${{ env.REGISTRYNAME }}" kubernetesVersion="${{ steps.aksVersion.outputs.version }}"
@@ -215,7 +214,7 @@ jobs:
     - uses: azure/arm-deploy@v1
       id: deploy
       with:
-        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/container-webapp-template.json
         parameters: webAppName="${{ env.APPNAME }}" hostingPlanName="${{ env.HOSTINGPLAN }}" sku="${{ env.SKU }}" appInsightsLocation="${{ env.LOCATION }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.APSBGCOLOR }}"
@@ -262,7 +261,7 @@ jobs:
     - uses: azure/arm-deploy@v1
       id: deploy
       with:
-        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/aca-template.json
         parameters: name="${{ env.ACANAME }}" registryUrl="${{ env.REGISTRYNAME }}.azurecr.io" registryUsername="${{ steps.acrCredentials.outputs.acr_username }}" registryPassword="${{ steps.acrCredentials.outputs.acr_password }}" repositoryName="${{ env.IMAGENAME }}" imageTag="${{ github.sha }}" environmentName="${{ env.ACAENAME }}" workspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" backgroundColor="${{ env.ACABGCOLOR }}"
@@ -297,7 +296,7 @@ jobs:
       uses: azure/arm-deploy@v1
       id: deployService
       with:
-        subscriptionId: ${{ env.SUBSCRIPTIONID }}
+        subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/asa-template.json
         parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}"
