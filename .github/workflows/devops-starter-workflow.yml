@@ -54,6 +54,10 @@ jobs:
           az group create -n ${{ env.RESOURCEGROUPNAME }} -l ${{ env.LOCATION }}
         fi
 
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '3.1.0'
+
     - name: Build and Run unit tests 
       run: | 
             pushd ${{ env.APPLICATIONPATH }}
