@@ -85,7 +85,8 @@
     },
     "variables": {
         "omsWorkspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('logAnalyticsWorkspaceName'))]",
-        "clusterId": "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
+        "clusterId": "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]",
+        "acrPullRole" : "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
     },
     "resources": [
         {
@@ -212,6 +213,18 @@
                         }
                     ]
                 }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
+            "apiVersion": "2018-09-01-preview",
+            "name": "[concat(parameters('registryName'), '/Microsoft.Authorization/', guid(parameters('registryName')))]",
+            "properties": {
+                "roleDefinitionId": "[variables('AcrPullRole')]",
+                "principalId": "[reference('Microsoft.ContainerService/managedClusters/',parameters('clusterName')).identity.principalId]"
             },
             "dependsOn": [
                 "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
