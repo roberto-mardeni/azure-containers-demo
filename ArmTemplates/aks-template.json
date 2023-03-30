@@ -224,7 +224,7 @@
             "name": "[concat(parameters('registryName'), '/Microsoft.Authorization/', guid(parameters('registryName')))]",
             "properties": {
                 "roleDefinitionId": "[variables('AcrPullRole')]",
-                "principalId": "[reference('Microsoft.ContainerService/managedClusters/',parameters('clusterName')).identity.principalId]"
+                "principalId": "[reference(concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName')), '2021-07-01', 'Full').identity.principalId]"
             },
             "dependsOn": [
                 "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
