@@ -55,22 +55,6 @@ jobs:
             dotnet test aspnet-core-dotnet-core.UnitTests/aspnet-core-dotnet-core.UnitTests.csproj  --verbosity normal
             popd
 
-    - name: Install Helm
-      uses: azure/setup-helm@v1
-      id: installHelm
-
-    - name: Package Helm Chart
-      run: |
-        pushd Charts/aspnet-core-dotnet-core
-        helm package . --version 1.0
-        popd
-
-    - name: Upload Helm Chart Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: helm-chart
-        path: Charts/aspnet-core-dotnet-core/*.tgz
-
     - name: Azure authentication
       uses: azure/login@v1
       with:
@@ -163,19 +147,20 @@ jobs:
         template: ./ArmTemplates/aks-template.json
         parameters: clusterName="${{ env.AKSCLUSTERNAME }}" dnsPrefix="${{ env.AKSCLUSTERNAME }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" registryName="${{ env.REGISTRYNAME }}" kubernetesVersion="${{ steps.aksVersion.outputs.version }}"
 
-    - name: Download Helm Chart
-      uses: actions/download-artifact@v2
-      with:
-        name: helm-chart
-
     - name: Install Helm
       uses: azure/setup-helm@v1
       id: installHelm
 
+    - name: Package Helm Chart
+      run: |
+        pushd Charts/aspnet-core-dotnet-core
+        helm package . --version 1.0
+        popd
+
     - name: Install Helm Chart
       run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.DNSLABEL }}" -i --wait --timeout 15m0s
+        helm upgrade v1 Charts/aspnet-core-dotnet-core/aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.DNSLABEL }}" -i --wait --timeout 15m0s
 
     - name: Retrieve URL
       run: |
