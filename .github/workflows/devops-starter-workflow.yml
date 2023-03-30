@@ -140,6 +140,7 @@ jobs:
     name: Deploy to AKS
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 3600
     steps:
     - uses: actions/checkout@master
 
