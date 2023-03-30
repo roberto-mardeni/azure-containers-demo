@@ -150,6 +150,8 @@ jobs:
     - name: Install Helm
       uses: azure/setup-helm@v1
       id: installHelm
+      with:
+        version: v3.10.3
 
     - name: Install Helm Chart
       run: |
