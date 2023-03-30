@@ -151,16 +151,13 @@ jobs:
       uses: azure/setup-helm@v1
       id: installHelm
 
-    - name: Package Helm Chart
+    - name: Install Helm Chart
       run: |
         pushd Charts/aspnet-core-dotnet-core
         helm package . --version 1.0
-        popd
-
-    - name: Install Helm Chart
-      run: |
         az aks get-credentials -n ${{ env.AKSCLUSTERNAME }} -g ${{ env.RESOURCEGROUPNAME }}
-        helm upgrade v1 Charts/aspnet-core-dotnet-core/aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.DNSLABEL }}" -i --wait --timeout 15m0s
+        helm upgrade v1 aspnet-core-dotnet-core-1.0.tgz --set applicationConfiguration.backgroundColor="${{ env.AKSBGCOLOR }}" --set ingress.fqdn="${{ steps.deploy.outputs.applicationRoutingZone }}" --set image.server="${{ env.REGISTRYNAME }}.azurecr.io" --set image.tag="${{ github.sha }}" --set ingress.host="${{ env.DNSLABEL }}" -i --wait --timeout 15m0s
+        popd
 
     - name: Retrieve URL
       run: |
