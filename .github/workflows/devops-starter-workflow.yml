@@ -6,6 +6,11 @@ on:
       - master
   workflow_dispatch:
     inputs:
+      include_aci:
+        description: 'Deploy to ACI'
+        required: true
+        default: true
+        type: boolean
       comments:
         description: Comments
         type: string
@@ -99,6 +104,7 @@ jobs:
     name: Deploy to Container Instance
     needs: build
     runs-on: ubuntu-latest
+    if:  ${{ inputs.include_aci }} 
     steps:
     - uses: actions/checkout@master
 
