@@ -23,7 +23,7 @@ env:
   REGISTRYNAME: "azurecontainersdemoacr13579"
   IMAGENAME: "azurecontainersdemowebappc580"
   RESOURCEGROUPNAME: azure-containers-demo-rg
-  LOCATION: eastus
+  LOCATION: westus
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
   DNSLABEL: v1aspnet
