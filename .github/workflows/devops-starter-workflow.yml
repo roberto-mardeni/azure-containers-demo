@@ -6,6 +6,16 @@ on:
       - master
   workflow_dispatch:
     inputs:
+      location:
+        description: 'Region'
+        required: true
+        default: 'eastus'
+        type: choice
+        options:
+          - eastus
+          - eastus2
+          - westus
+          - westus2
       include_aci:
         description: 'Deploy to Azure Container Instances'
         required: true
@@ -48,7 +58,7 @@ env:
   REGISTRYNAME: "azurecontainersdemoacr13579"
   IMAGENAME: "azurecontainersdemowebappc580"
   RESOURCEGROUPNAME: azure-containers-demo-rg
-  LOCATION: westus
+  LOCATION: ${{ inputs.location }}
   SKU: S1 Standard
   AKSCLUSTERNAME: azure-containers-demo-aks
   DNSLABEL: v1aspnet
