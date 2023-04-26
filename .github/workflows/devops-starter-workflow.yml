@@ -7,7 +7,27 @@ on:
   workflow_dispatch:
     inputs:
       include_aci:
-        description: 'Deploy to ACI'
+        description: 'Deploy to Azure Container Instances'
+        required: true
+        default: true
+        type: boolean
+      include_appservice:
+        description: 'Deploy to Azure App Service'
+        required: true
+        default: true
+        type: boolean
+      include_aca:
+        description: 'Deploy to Azure Container App'
+        required: true
+        default: true
+        type: boolean
+      include_aks:
+        description: 'Deploy to Azure Kubernetes Service'
+        required: true
+        default: true
+        type: boolean
+      include_asa:
+        description: 'Deploy to Azure Spring App'
         required: true
         default: true
         type: boolean
@@ -130,6 +150,7 @@ jobs:
     name: Deploy to AKS
     needs: build
     runs-on: ubuntu-latest
+    if:  ${{ inputs.include_aks }} 
     timeout-minutes: 3600
     steps:
     - uses: actions/checkout@master
@@ -175,6 +196,7 @@ jobs:
     name: Deploy to App Service
     needs: build
     runs-on: ubuntu-latest
+    if:  ${{ inputs.include_appservice }} 
     steps:
     - uses: actions/checkout@master
 
@@ -201,6 +223,7 @@ jobs:
     name: Deploy to Container Apps
     needs: build
     runs-on: ubuntu-latest
+    if:  ${{ inputs.include_aca }} 
     steps:
     - uses: actions/checkout@master
 
@@ -233,6 +256,7 @@ jobs:
     name: Deploy to Spring Apps
     needs: build
     runs-on: ubuntu-latest
+    if:  ${{ inputs.include_asa }} 
     steps:
     - uses: actions/checkout@master
 
