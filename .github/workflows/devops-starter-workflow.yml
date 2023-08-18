@@ -180,7 +180,12 @@ jobs:
         subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/aks-template.json
-        parameters: clusterName="${{ env.AKSCLUSTERNAME }}" dnsPrefix="${{ env.AKSCLUSTERNAME }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" registryName="${{ env.REGISTRYNAME }}" kubernetesVersion="${{ steps.aksVersion.outputs.version }}"
+        parameters: clusterName="${{ env.AKSCLUSTERNAME }}" dnsPrefix="${{ env.AKSCLUSTERNAME }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" kubernetesVersion="${{ steps.aksVersion.outputs.version }}"
+
+    - name: Attach AKS to ACR
+      id: attachAksToAcr
+      continue-on-error: false
+      run: az aks update -n "${{ env.AKSCLUSTERNAME }}" -g "${{ env.RESOURCEGROUPNAME }}" --attach-acr "${{ env.REGISTRYNAME }}"
 
     - name: Install Helm
       uses: azure/setup-helm@v1

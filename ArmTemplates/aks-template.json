@@ -57,36 +57,17 @@
             "minValue": 0,
             "maxValue": 1023
         },
-        "agentCount": {
-            "defaultValue": 3,
-            "type": "int"
-        },
-        "agentVMSize": {
-            "defaultValue": "Standard_DS2_v2",
-            "type": "string"
-        },
         "kubernetesVersion": {
             "type": "string",
             "defaultValue": "1.22.11"
         },
         "logAnalyticsWorkspaceName": {
             "type": "string"
-        },
-        "registryName": {
-            "type": "string"
-        },
-        "guidValue": {
-            "type": "string",
-            "metadata": {
-                "description": "The unique id used in the role assignment of the kubernetes service to the container registry service. It is recommended to use the default value."
-            },
-            "defaultValue": "[newGuid()]"
         }
     },
     "variables": {
         "omsWorkspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('logAnalyticsWorkspaceName'))]",
-        "clusterId": "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]",
-        "acrPullRole" : "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
+        "clusterId": "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
     },
     "resources": [
         {
@@ -213,18 +194,6 @@
                         }
                     ]
                 }
-            },
-            "dependsOn": [
-                "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
-            "apiVersion": "2018-09-01-preview",
-            "name": "[concat(parameters('registryName'), '/Microsoft.Authorization/', guid(parameters('registryName')))]",
-            "properties": {
-                "roleDefinitionId": "[variables('AcrPullRole')]",
-                "principalId": "[reference(concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName')), '2021-07-01', 'Full').identity.principalId]"
             },
             "dependsOn": [
                 "[concat('Microsoft.ContainerService/managedClusters/',parameters('clusterName'))]"
