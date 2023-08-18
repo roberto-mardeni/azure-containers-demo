@@ -56,7 +56,8 @@ env:
   IMAGENAME: "azurecontainersdemowebappc580"
   RESOURCEGROUPNAME: azure-containers-demo-rg
   LOCATION: ${{ inputs.location }}
-  SKU: S1 Standard
+  SKUTIER: PremiumV3
+  SKUNAME: P1v3
   AKSCLUSTERNAME: azure-containers-demo-aks
   DNSLABEL: v1aspnet
   ACANAME: v1aspnet-aca 
@@ -218,7 +219,7 @@ jobs:
         subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/container-webapp-template.json
-        parameters: webAppName="${{ env.APPNAME }}" hostingPlanName="${{ env.HOSTINGPLAN }}" sku="${{ env.SKU }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.APSBGCOLOR }}"
+        parameters: webAppName="${{ env.APPNAME }}" hostingPlanName="${{ env.HOSTINGPLAN }}" skuTier="${{ env.SKUTIER }}" skuName="${{ env.SKUNAME }}" registryName="${{ env.REGISTRYNAME }}" imageName="${{ env.IMAGENAME }}" registryLocation="${{ env.LOCATION }}" registrySku="${{ env.REGISTRYSKU }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.APSBGCOLOR }}"
  
     - name: 'Deploy to Azure Web App for Container'
       uses: azure/webapps-deploy@v2
