@@ -8,11 +8,12 @@
         "hostingPlanName": {
             "type": "String"
         },
-        "appInsightsLocation": {
+        "skuTier": {
+            "defaultValue": "PremiumV3",
             "type": "String"
         },
-        "sku": {
-            "defaultValue": "Standard",
+        "skuName": {
+            "defaultValue": "P1V3",
             "type": "String"
         },
         "registryName": {
@@ -106,10 +107,6 @@
         },
         {
             "type": "Microsoft.Web/serverfarms",
-            "sku": {
-                "Tier": "[first(skip(split(parameters('sku'), ' '), 1))]",
-                "Name": "[first(split(parameters('sku'), ' '))]"
-            },
             "kind": "linux",
             "name": "[parameters('hostingPlanName')]",
             "apiVersion": "2016-09-01",
@@ -120,6 +117,10 @@
                 "reserved": true,
                 "numberOfWorkers": "1",
                 "hostingEnvironment": ""
+            },
+            "sku": {
+                "Tier": "[parameters('skuTier')]",
+                "Name": "[parameters('skuName')]"
             }
         }
     ]
