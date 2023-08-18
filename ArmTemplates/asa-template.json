@@ -57,6 +57,7 @@
                             "properties": {
                                 "deploymentSettings": {
                                     "environmentVariables": {
+                                        "ApplicationConfiguration__Host": "Azure Spring Apps",
                                         "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]",
                                         "ASPNETCORE_URLS": "http://+:1025/"
                                     }

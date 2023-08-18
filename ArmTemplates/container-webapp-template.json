@@ -73,6 +73,10 @@
                             "value": "[reference(resourceId('microsoft.insights/components/', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
                         },
                         {
+                            "name": "ApplicationConfiguration__Host",
+                            "value": "Azure App Service"
+                        },
+                        {
                             "name": "ApplicationConfiguration__BackgroundColor",
                             "value": "[parameters('backgroundColor')]"
                         }

@@ -77,6 +77,10 @@
                             },
                             "environmentVariables": [
                                 {
+                                    "name": "ApplicationConfiguration__Host",
+                                    "value": "Azure Container Instances"
+                                },
+                                {
                                     "name": "ApplicationConfiguration__BackgroundColor",
                                     "value": "[parameters('backgroundColor')]"
                                 }

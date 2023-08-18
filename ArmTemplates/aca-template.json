@@ -81,6 +81,10 @@
                             "command": [],
                             "env": [
                                 {
+                                    "name": "ApplicationConfiguration__Host",
+                                    "value": "Azure Container Apps"
+                                },
+                                {
                                     "name": "ApplicationConfiguration__BackgroundColor",
                                     "value": "[parameters('backgroundColor')]"
                                 }
