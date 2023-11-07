@@ -13,6 +13,21 @@
         },
         "appInsightsName": {
             "type": "string"
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "registryServer": {
+            "type": "string"
+        },
+        "registryUsername": {
+            "type": "string"
+        },
+        "registryPassword": {
+            "type": "string"
+        },
+        "containerImage": {
+            "type": "string"
         }
     },
     "resources": [
@@ -20,7 +35,7 @@
             "name": "[parameters('serviceName')]",
             "location": "[resourceGroup().location]",
             "type": "Microsoft.AppPlatform/Spring",
-            "apiVersion": "2022-05-01-preview",
+            "apiVersion": "2023-03-01-preview",
             "sku": {
                 "name": "B0",
                 "tier": "Basic"
@@ -32,18 +47,57 @@
             "resources": [
                 {
                     "type": "apps",
-                    "apiVersion": "2020-07-01",
+                    "apiVersion": "2023-03-01-preview",
                     "name": "[parameters('appName')]",
                     "properties": {
                         "public": true,
                         "fqdn": "[concat(parameters('serviceName'), '.azuremicroservices.io')]",
-                        "httpsOnly": false,
-                        "enableEndToEndTLS": false
+                        "httpsOnly": true,
+                        "enableEndToEndTLS": true
                     },
                     "dependsOn": [
                         "[parameters('serviceName')]"
                     ],
-                    "resources": []
+                    "resources": [
+                        {
+                            "type": "deployments",
+                            "apiVersion": "2023-03-01-preview",
+                            "name": "default",
+                            "dependsOn": [
+                                "[parameters('appName')]"
+                            ],
+                            "sku": {
+                                "capacity": 1,
+                                "name": "B0",
+                                "tier": "Basic"
+                            },
+                            "properties": {
+                                "active": true,
+                                "deploymentSettings": {
+                                    "addonConfigs": {},
+                                    "containerProbeSettings": {
+                                        "disableProbe": true
+                                    },
+                                    "environmentVariables": {
+                                        "ApplicationConfiguration__Host": "Azure Spring Apps",
+                                        "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]",
+                                        "ASPNETCORE_URLS": "http://+:1025/"
+                                    }
+                                },
+                                "source": {
+                                    "type": "Container",
+                                    "customContainer": {
+                                        "containerImage": "[parameters('containerImage')]",
+                                        "imageRegistryCredential": {
+                                            "password": "[parameters('registryPassword')]",
+                                            "username": "[parameters('registryUsername')]"
+                                        },
+                                        "server": "[parameters('registryServer')]"
+                                    }
+                                }
+                            }
+                        }
+                    ]
                 }
             ]
         },
