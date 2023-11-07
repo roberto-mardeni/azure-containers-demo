@@ -292,7 +292,7 @@ jobs:
         subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/asa-template.json
-        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}"
+        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}"
 
     - name: Deploy Spring App
       id: deployApp
@@ -312,7 +312,9 @@ jobs:
         az spring app update -n ${{ env.DNSLABEL }} \
           -g ${{ env.RESOURCEGROUPNAME }} \
           --service ${{ env.ASANAME }} \
-          --env ApplicationConfiguration__Host="Azure Spring Apps" ApplicationConfiguration__BackgroundColor="${{ env.ASABGCOLOR }}" ASPNETCORE_URLS="http://+:1025/" \
+          --env ApplicationConfiguration__Host="Azure Spring Apps" \
+          --env ApplicationConfiguration__BackgroundColor="${{ env.ASABGCOLOR }}" \
+          --env ASPNETCORE_URLS="http://+:1025/" \
           --assign-endpoint true
 
     - name: Retrieve URL

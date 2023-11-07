@@ -8,9 +8,6 @@
         "appName": {
             "type": "string"
         },
-        "backgroundColor": {
-            "type": "string"
-        },
         "logAnalyticsWorkspaceName": {
             "type": "string"
         },
@@ -33,43 +30,21 @@
             },
             "dependsOn": [],
             "resources": [
-                // {
-                //     "type": "apps",
-                //     "apiVersion": "2020-07-01",
-                //     "name": "[parameters('appName')]",
-                //     "properties": {
-                //         "public": true,
-                //         "fqdn": "[concat(parameters('serviceName'), '.azuremicroservices.io')]",
-                //         "httpsOnly": false,
-                //         "enableEndToEndTLS": false
-                //     },
-                //     "dependsOn": [
-                //         "[parameters('serviceName')]"
-                //     ],
-                //     "resources": [
-                //         {
-                //             "type": "deployments",
-                //             "apiVersion": "2020-07-01",
-                //             "name": "default",
-                //             "dependsOn": [
-                //                 "[parameters('appName')]"
-                //             ],
-                //             "properties": {
-                //                 "deploymentSettings": {
-                //                     "environmentVariables": {
-                //                         "ApplicationConfiguration__Host": "Azure Spring Apps",
-                //                         "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]",
-                //                         "ASPNETCORE_URLS": "http://+:1025/"
-                //                     }
-                //                 },
-                //                 "source": {
-                //                     "relativePath": "<default>",
-                //                     "type": "Jar"
-                //                 }
-                //             }
-                //         }
-                //     ]
-                // }
+                {
+                    "type": "apps",
+                    "apiVersion": "2020-07-01",
+                    "name": "[parameters('appName')]",
+                    "properties": {
+                        "public": true,
+                        "fqdn": "[concat(parameters('serviceName'), '.azuremicroservices.io')]",
+                        "httpsOnly": false,
+                        "enableEndToEndTLS": false
+                    },
+                    "dependsOn": [
+                        "[parameters('serviceName')]"
+                    ],
+                    "resources": []
+                }
             ]
         },
         {
