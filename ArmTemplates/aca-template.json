@@ -101,7 +101,7 @@
                 },
                 "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments/', parameters('environmentName'))]"
             },
-            "apiVersion": "2022-01-01-preview",
+            "apiVersion": "2022-10-01",
             "type": "Microsoft.App/containerapps"
         }
     ]
