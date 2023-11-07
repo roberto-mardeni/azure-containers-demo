@@ -308,7 +308,14 @@ jobs:
           --container-registry "${{ env.REGISTRYNAME }}.azurecr.io" \
           --registry-password "${{ steps.acrCredentials.outputs.ACR_PASSWORD }}" \
           --registry-username "${{ steps.acrCredentials.outputs.ACR_USERNAME }}"
-        
+
+        az spring app deployment create \
+          -g ${{ env.RESOURCEGROUPNAME }} \
+          --service ${{ env.ASANAME }} \
+          --app ${{ env.DNSLABEL }} \
+          --name v1 \
+          --container-image "${{ env.IMAGENAME }}:${{ github.sha }}"
+
         az spring app update -n ${{ env.DNSLABEL }} \
           -g ${{ env.RESOURCEGROUPNAME }} \
           --service ${{ env.ASANAME }} \
