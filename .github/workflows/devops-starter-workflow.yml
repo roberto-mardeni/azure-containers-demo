@@ -292,7 +292,7 @@ jobs:
         subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
         template: ./ArmTemplates/asa-template.json
-        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}" registryServer="${{ env.REGISTRYNAME }}.azurecr.io" registryUsername="${{ steps.acrCredentials.outputs.ACR_PASSWORD }}" registryPassword="${{ steps.acrCredentials.outputs.ACR_USERNAME }}" containerImage="${{ env.IMAGENAME }}:${{ github.sha }}"
+        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}" registryServer="${{ env.REGISTRYNAME }}.azurecr.io" registryUsername="${{ steps.acrCredentials.outputs.ACR_USERNAME }}" registryPassword="${{ steps.acrCredentials.outputs.ACR_PASSWORD }}" containerImage="${{ env.IMAGENAME }}:${{ github.sha }}"
 
     - name: Retrieve URL
       run: |
