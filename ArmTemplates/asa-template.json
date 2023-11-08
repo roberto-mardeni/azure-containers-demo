@@ -82,8 +82,8 @@
                                         "ASPNETCORE_URLS": "http://+:1025/"
                                     },
                                     "resourceRequests": {
-                                        "cpu": "1",
-                                        "memory": "2Gi"
+                                        "cpu": "2",
+                                        "memory": "4Gi"
                                     }
                                 },
                                 "source": {
