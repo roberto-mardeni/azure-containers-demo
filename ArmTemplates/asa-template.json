@@ -94,7 +94,7 @@
                                             "password": "[parameters('registryPassword')]",
                                             "username": "[parameters('registryUsername')]"
                                         },
-                                        "languageFramework": "polyglot",
+                                        "languageFramework": "Polyglot",
                                         "server": "[parameters('registryServer')]"
                                     }
                                 }
