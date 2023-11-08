@@ -69,7 +69,7 @@
                                 "[parameters('appName')]"
                             ],
                             "sku": {
-                                "capacity": 1,
+                                "capacity": 2,
                                 "name": "[variables('skuName')]",
                                 "tier": "[variables('skuTier')]"
                             },
