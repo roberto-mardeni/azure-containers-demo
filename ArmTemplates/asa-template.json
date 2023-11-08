@@ -30,6 +30,10 @@
             "type": "string"
         }
     },
+    "variables": {
+        "skuName": "S0",
+        "skuTier": "Standard"
+    },
     "resources": [
         {
             "name": "[parameters('serviceName')]",
@@ -37,8 +41,8 @@
             "type": "Microsoft.AppPlatform/Spring",
             "apiVersion": "2023-03-01-preview",
             "sku": {
-                "name": "B0",
-                "tier": "Basic"
+                "name": "[variables('skuName')]",
+                "tier": "[variables('skuTier')]"
             },
             "properties": {
                 "zoneRedundant": false
@@ -68,20 +72,20 @@
                             ],
                             "sku": {
                                 "capacity": 1,
-                                "name": "B0",
-                                "tier": "Basic"
+                                "name": "[variables('skuName')]",
+                                "tier": "[variables('skuTier')]"
                             },
                             "properties": {
                                 "active": true,
                                 "deploymentSettings": {
-                                    "addonConfigs": {},
-                                    "containerProbeSettings": {
-                                        "disableProbe": true
-                                    },
                                     "environmentVariables": {
                                         "ApplicationConfiguration__Host": "Azure Spring Apps",
                                         "ApplicationConfiguration__BackgroundColor": "[parameters('backgroundColor')]",
                                         "ASPNETCORE_URLS": "http://+:1025/"
+                                    },
+                                    "resourceRequests": {
+                                        "cpu": "1",
+                                        "memory": "2Gi"
                                     }
                                 },
                                 "source": {
