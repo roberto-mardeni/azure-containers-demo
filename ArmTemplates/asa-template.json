@@ -55,9 +55,7 @@
                     "name": "[parameters('appName')]",
                     "properties": {
                         "public": true,
-                        "fqdn": "[concat(parameters('serviceName'), '.azuremicroservices.io')]",
-                        "httpsOnly": true,
-                        "enableEndToEndTLS": false
+                        "fqdn": "[concat(parameters('serviceName'), '.azuremicroservices.io')]"
                     },
                     "dependsOn": [
                         "[parameters('serviceName')]"
