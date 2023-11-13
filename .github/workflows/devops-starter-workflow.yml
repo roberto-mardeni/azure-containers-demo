@@ -132,6 +132,7 @@ jobs:
     name: Deploy to Container Instance
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if:  ${{ inputs.include_aci }} 
     steps:
     - uses: actions/checkout@master
@@ -158,8 +159,8 @@ jobs:
     name: Deploy to AKS
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if:  ${{ inputs.include_aks }} 
-    timeout-minutes: 3600
     steps:
     - uses: actions/checkout@master
 
@@ -209,6 +210,7 @@ jobs:
     name: Deploy to App Service
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if:  ${{ inputs.include_appservice }} 
     steps:
     - uses: actions/checkout@master
@@ -236,6 +238,7 @@ jobs:
     name: Deploy to Container Apps
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if:  ${{ inputs.include_aca }} 
     steps:
     - uses: actions/checkout@master
@@ -269,6 +272,7 @@ jobs:
     name: Deploy to Spring Apps
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if:  ${{ inputs.include_asa }} 
     steps:
     - uses: actions/checkout@master
