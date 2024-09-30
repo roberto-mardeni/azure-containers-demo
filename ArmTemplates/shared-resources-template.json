@@ -5,14 +5,12 @@
         "registryName": {
             "type": "String"
         },
-        "registryLocation": {
-            "type": "String"
-        },
         "registrySku": {
             "defaultValue": "Standard",
             "type": "String"
         },
         "logAnalyticsWorkspaceName": {
+            "defaultValue": "azure-containers-demo-la",
             "type": "String"
         },
         "logAnalyticsWorkspaceSku": {
@@ -20,6 +18,7 @@
             "defaultValue": "pergb2018"
         },
         "appInsightsName": {
+            "defaultValue": "azure-containers-demo-ai",
             "type": "String"
         }
     },
@@ -31,7 +30,7 @@
             },
             "name": "[parameters('registryName')]",
             "apiVersion": "2017-10-01",
-            "location": "[parameters('registryLocation')]",
+            "location": "[resourceGroup().location]",
             "properties": {
                 "adminUserEnabled": true
             }
