@@ -33,11 +33,6 @@ on:
         required: true
         default: true
         type: boolean
-      include_asa:
-        description: 'Deploy to Azure Spring App'
-        required: true
-        default: true
-        type: boolean
       comments:
         description: Comments
         type: string
@@ -267,43 +262,6 @@ jobs:
         echo "Azure Container Instance URL:"
         url=`az containerapp show --resource-group ${{ env.RESOURCEGROUPNAME }} --name ${{ env.ACANAME }} --query "properties.configuration.ingress.fqdn" --out TSV`
         echo "http://$url"
-
-  deployAzureSpringApps:
-    name: Deploy to Spring Apps
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if:  ${{ inputs.include_asa }} 
-    steps:
-    - uses: actions/checkout@master
-
-    - name: Azure authentication
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Fetch ACR credentials
-      id: acrCredentials
-      continue-on-error: false
-      run: |
-        echo "ACR_USERNAME=`az acr credential show -n ${{ env.REGISTRYNAME }} --query username`" >> $GITHUB_OUTPUT
-        echo "ACR_PASSWORD=`az acr credential show -n ${{ env.REGISTRYNAME }} --query passwords[0].value`" >> $GITHUB_OUTPUT
-
-    - name: Deploy Service
-      uses: azure/arm-deploy@v1
-      id: deployService
-      with:
-        subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
-        resourceGroupName: ${{ env.RESOURCEGROUPNAME }}
-        template: ./ArmTemplates/asa-template.json
-        parameters: serviceName="${{ env.ASANAME }}" appName="${{ env.DNSLABEL }}" logAnalyticsWorkspaceName="${{ env.LOGANALYTICSWORKSPACENAME }}" appInsightsName="${{ env.APPINSIGHTSNAME }}" backgroundColor="${{ env.ASABGCOLOR }}" registryServer="${{ env.REGISTRYNAME }}.azurecr.io" registryUsername="${{ steps.acrCredentials.outputs.ACR_USERNAME }}" registryPassword="${{ steps.acrCredentials.outputs.ACR_PASSWORD }}" containerImage="${{ env.IMAGENAME }}:${{ github.sha }}"
-
-    - name: Retrieve URL
-      run: |
-        az spring app show -g ${{ env.RESOURCEGROUPNAME }} \
-          --service ${{ env.ASANAME }} \
-          -n ${{ env.DNSLABEL }} \
-          --query "properties.url" -o TSV
 
   cleanup:
     name: Clean Up
