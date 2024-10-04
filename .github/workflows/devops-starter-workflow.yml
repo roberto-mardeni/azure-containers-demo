@@ -59,10 +59,9 @@ env:
   ACAENAME: azure-containers-demo-acae
   ASANAME: azure-containers-demo-asa
   ACIBGCOLOR: "#FF9100"
-  APSBGCOLOR: "#FF00FF"
-  AKSBGCOLOR: "#179C00"
+  APSBGCOLOR: "#00afff"
+  AKSBGCOLOR: "#800080"
   ACABGCOLOR: "#009C17"
-  ASABGCOLOR: "#9C0017"
 
 jobs:
   build:
