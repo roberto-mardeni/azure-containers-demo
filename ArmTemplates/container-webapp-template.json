@@ -80,6 +80,10 @@
                         {
                             "name": "ApplicationConfiguration__BackgroundColor",
                             "value": "[parameters('backgroundColor')]"
+                        },
+                        {
+                            "name": "WEBSITES_PORT",
+                            "value": "8080"
                         }
                     ],
                     "alwaysOn": true,
