@@ -6,7 +6,7 @@ on:
       location:
         description: 'Region'
         required: true
-        default: 'eastus'
+        default: 'westus'
         type: choice
         options:
           - eastus
