@@ -69,7 +69,7 @@
                     "activeRevisionsMode": "Single",
                     "ingress": {
                         "external": true,
-                        "targetPort": "80",
+                        "targetPort": "8080",
                         "transport": "auto"
                     }
                 },
