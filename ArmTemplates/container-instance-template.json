@@ -52,7 +52,7 @@
     "variables": {
         "ports": [
             {
-                "port": 8080,
+                "port": 80,
                 "protocol": "TCP"
             }
         ]
@@ -83,7 +83,12 @@
                                 {
                                     "name": "ApplicationConfiguration__BackgroundColor",
                                     "value": "[parameters('backgroundColor')]"
+                                },
+                                {
+                                    "name": "ASPNETCORE_URLS",
+                                    "value": "http://*:80"
                                 }
+
                             ],
                             "ports": "[variables('ports')]"
                         }
