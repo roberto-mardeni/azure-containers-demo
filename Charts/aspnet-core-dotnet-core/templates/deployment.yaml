@@ -38,6 +38,8 @@ spec:
             value: "Azure Kubernetes Service"
           - name: ApplicationConfiguration__BackgroundColor
             value: "{{ .Values.applicationConfiguration.backgroundColor }}"
+          - name: ASPNETCORE_URLS
+            value: "http://*:80/;https://*:443/"
           ports:
             - name: http
               containerPort: 80

@@ -82,8 +82,8 @@
                             "value": "[parameters('backgroundColor')]"
                         },
                         {
-                            "name": "WEBSITES_PORT",
-                            "value": "8080"
+                            "name": "ASPNETCORE_URLS",
+                            "value": "http://*:80/;https://*:443/"
                         }
                     ],
                     "alwaysOn": true,
