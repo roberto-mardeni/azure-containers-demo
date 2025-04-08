@@ -86,7 +86,7 @@
                                 },
                                 {
                                     "name": "ASPNETCORE_URLS",
-                                    "value": "http://*:80/;https://*:443/"
+                                    "value": "http://*:80/"
                                 }
                             ],
                             "ports": "[variables('ports')]"
