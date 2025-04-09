@@ -51,6 +51,22 @@ namespace aspnet_core_dotnet_core
                 app.UseExceptionHandler("/Error");
             }
 
+            // Add custom middleware to append an HTTP header
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    if (!context.Response.Headers.ContainsKey(key: "X-Custom-Header"))
+                    {
+                        context.Response.Headers.Append("X-Custom-Header", "SampleApp-" + DateTime.Now.ToString("s"));
+                    }
+                    
+                    return Task.CompletedTask;
+                });
+
+                await next();
+            });
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseRouting();
