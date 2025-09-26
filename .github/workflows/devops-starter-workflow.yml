@@ -8,13 +8,14 @@ on:
       location:
         description: 'Region'
         required: true
-        default: 'westus'
+        default: 'canadacentral'
         type: choice
         options:
           - eastus
           - eastus2
           - westus
           - westus2
+          - canadacentral
       include_aci:
         description: 'Deploy to Azure Container Instances'
         required: true
