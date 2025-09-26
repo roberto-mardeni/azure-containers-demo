@@ -1,5 +1,7 @@
 name: Build and deploy
-
+permissions:
+  id-token: write
+  contents: read
 on:
   workflow_dispatch:
     inputs:
@@ -85,7 +87,9 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Create Azure Resource Group
       run: |
@@ -134,7 +138,9 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - uses: azure/arm-deploy@v1
       id: deploy
@@ -161,7 +167,9 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Fetch AKS Version
       id: aksVersion
@@ -212,7 +220,9 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - uses: azure/arm-deploy@v1
       id: deploy
@@ -240,7 +250,9 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Install Azure Container App CLI Extension
       id: installAcaCliExtension
@@ -271,7 +283,9 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Delete Log Analytics Workspace
       continue-on-error: true
@@ -284,3 +298,4 @@ jobs:
       continue-on-error: true
       run: |
         az group delete -g ${{ env.RESOURCEGROUPNAME }} --yes
+
