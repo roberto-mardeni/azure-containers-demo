@@ -15,6 +15,9 @@ namespace aspnet_core_dotnet_core
 {
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class with the specified configuration.
+        /// </summary>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,7 +25,17 @@ namespace aspnet_core_dotnet_core
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
+        /// <param name="configuration">The application configuration properties.</param>
+        /// The <see cref="IServiceCollection"/> to which services are added.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// - Configures cookie policy options, enforcing user consent for non-essential cookies and setting the minimum SameSite policy.
+        /// - Registers <see cref="IApplicationConfiguration"/> as a singleton, binding its values from the "ApplicationConfiguration" section in configuration.
+        /// - Adds support for Razor Pages to the application.
+        /// </para>
+        /// </remarks>
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
@@ -60,7 +73,7 @@ namespace aspnet_core_dotnet_core
                     {
                         context.Response.Headers.Append("X-Custom-Header", "SampleApp-" + DateTime.Now.ToString("s"));
                     }
-                    
+
                     return Task.CompletedTask;
                 });
 
@@ -72,7 +85,8 @@ namespace aspnet_core_dotnet_core
             app.UseRouting();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapRazorPages();
             });
         }
