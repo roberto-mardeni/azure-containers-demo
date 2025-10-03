@@ -118,7 +118,7 @@
                         "enableAutoScaling": true,
                         "minCount": 1,
                         "maxCount": 3,
-                        "vmSize": "Standard_B4ms",
+                        "vmSize": "Standard_D2ds_v5",
                         "osType": "Linux",
                         "storageProfile": "ManagedDisks",
                         "type": "VirtualMachineScaleSets",
