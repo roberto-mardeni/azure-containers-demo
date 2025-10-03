@@ -176,7 +176,20 @@ jobs:
       id: aksVersion
       continue-on-error: false
       run: |
-          echo "version=`az aks get-versions -l ${{ env.LOCATION }} --query "values[?isDefault].version" --output tsv`" >> $GITHUB_OUTPUT
+          version=`az aks get-versions -l canadacentral -o json \
+            | jq -r '
+              [ .values[]
+                | select(.isPreview!=true)        # keep GA minors only
+                | .patchVersions | keys[]         # collect all patch versions, e.g., "1.29.5"
+              ]
+              | map( split(".") | map(tonumber) ) # turn "1.29.5" -> [1,29,5] for numeric sort
+              | sort
+              | last
+              | join(".")
+            '`
+
+          echo "Latest AKS Version: $version"
+          echo "version=${version}" >> $GITHUB_OUTPUT
 
     - uses: azure/arm-deploy@v1
       id: deploy
