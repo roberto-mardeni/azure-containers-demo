@@ -176,7 +176,7 @@ jobs:
       id: aksVersion
       continue-on-error: false
       run: |
-          echo "version=`az aks get-versions -l ${{ env.LOCATION }} --query "orchestrators[?default].orchestratorVersion" --output tsv`" >> $GITHUB_OUTPUT
+          echo "version=`az aks get-versions -l ${{ env.LOCATION }} --query "values[?isDefault].version" --output tsv`" >> $GITHUB_OUTPUT
 
     - uses: azure/arm-deploy@v1
       id: deploy
