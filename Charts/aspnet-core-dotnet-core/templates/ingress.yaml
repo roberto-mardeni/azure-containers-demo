@@ -26,6 +26,7 @@ spec:
       secretName: {{ .secretName }}
     {{- end }}
   {{- end }}
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
   - host: {{ .Values.ingress.host }}.{{ .Values.ingress.fqdn }}
     http:

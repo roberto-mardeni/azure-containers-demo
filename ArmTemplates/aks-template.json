@@ -30,10 +30,6 @@
                 "description": "Enable private network access to the Kubernetes cluster."
             }
         },
-        "enableHttpApplicationRouting": {
-            "type": "bool",
-            "defaultValue": true
-        },
         "enableAzurePolicy": {
             "type": "bool",
             "defaultValue": false,
@@ -142,9 +138,6 @@
                     "enablePrivateCluster": "[parameters('enablePrivateCluster')]"
                 },
                 "addonProfiles": {
-                    "httpApplicationRouting": {
-                        "enabled": "[parameters('enableHttpApplicationRouting')]"
-                    },
                     "azurepolicy": {
                         "enabled": "[parameters('enableAzurePolicy')]"
                     },
@@ -156,6 +149,11 @@
                         "config": {
                             "logAnalyticsWorkspaceResourceID": "[variables('omsWorkspaceId')]"
                         }
+                    }
+                },
+                "ingressProfile": {
+                    "webAppRouting": {
+                        "enabled": true
                     }
                 }
             },
@@ -201,9 +199,5 @@
         }
     ],
     "outputs": {
-        "applicationRoutingZone": {
-            "value": "[if(parameters('enableHttpApplicationRouting'), reference(variables('clusterId')).addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName, '')]",
-            "type": "string"
-        }
     }
 }
